@@ -40,5 +40,10 @@ extend-exclude = [
     "servers/ezbattery/ezbattery_tools/src/ezbattery_tools/_vendor",
 ]
 
+[tool.ruff.lint]
+# Keep the required CI check focused on correctness and import errors. Broader
+# style rules can be adopted separately without making existing code unmergeable.
+select = ["E4", "E7", "E9", "F"]
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
