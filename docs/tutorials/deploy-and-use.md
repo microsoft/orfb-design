@@ -9,6 +9,8 @@ Install:
 
 - Docker with Docker Compose v2;
 - GNU Make;
+- a Linux x86_64 host, or a Docker environment capable of running the
+  repository's Linux x86_64 scientific Python images;
 - `curl`, `unzip`, and `md5sum`; and
 - enough disk and memory for the scientific images and model assets.
 
