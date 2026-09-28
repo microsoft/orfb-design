@@ -7,7 +7,6 @@ before any model is touched.
 """
 
 import pytest
-
 from soltrannet_tools.solubility import predict_solubility
 
 

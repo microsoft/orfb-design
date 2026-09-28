@@ -32,9 +32,9 @@ from agora_workbench.code_execution.auth import create_noop_auth_config
 from agora_workbench.code_execution.data_access import AssetPublisher, BlobPublisher, LocalFilePublisher
 from agora_workbench.code_execution.data_access.credentials import create_storage_credential
 
-from servers.peers import peer_registry_for
 from servers.ezbattery.states import STATE_AFFORDANCES, EzbatteryState
 from servers.ezbattery.tools import EZBATTERY_TOOLS
+from servers.peers import peer_registry_for
 
 _EZBATTERY_TOOLS_PKG = str(Path(__file__).resolve().parent.parent / "ezbattery_tools")
 _ENVIRONMENT_FILE = Path(__file__).resolve().parent.parent / "environment.yml"

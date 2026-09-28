@@ -7,7 +7,6 @@ outside the conda kernel, so install the test extra first:
 """
 
 import pytest
-
 from orfb_tools.molecular_properties import molecular_properties
 from orfb_tools.sa_score import sa_score
 from orfb_tools.tanimoto_similarity import tanimoto_similarity

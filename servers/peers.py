@@ -43,7 +43,7 @@ def _env_peer_overrides() -> dict[str, str]:
             LOGGER.warning("AGORA_PEER_REGISTRY is not a JSON object; ignoring")
             return {}
         return {str(k): str(v) for k, v in data.items()}
-    except Exception as exc:  # pragma: no cover - defensive
+    except (OSError, UnicodeError, json.JSONDecodeError) as exc:  # pragma: no cover - defensive
         LOGGER.warning("Failed to parse AGORA_PEER_REGISTRY: %s", exc)
         return {}
 

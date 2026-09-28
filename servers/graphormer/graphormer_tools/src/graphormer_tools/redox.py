@@ -25,9 +25,7 @@ _SERVICE_TIMEOUT_S = 300.0
 def _predict_via_service(base_url: str, smiles_list: list[str], property_name: str) -> dict:
     url = base_url.rstrip("/") + "/predict"
     body = json.dumps({"smiles_list": smiles_list, "property_name": property_name}).encode("utf-8")
-    request = urllib.request.Request(
-        url, data=body, headers={"Content-Type": "application/json"}, method="POST"
-    )
+    request = urllib.request.Request(url, data=body, headers={"Content-Type": "application/json"}, method="POST")
     try:
         with urllib.request.urlopen(request, timeout=_SERVICE_TIMEOUT_S) as response:
             return json.loads(response.read().decode("utf-8"))
@@ -38,9 +36,7 @@ def _predict_via_service(base_url: str, smiles_list: list[str], property_name: s
             raise ValueError(detail) from exc
         raise RuntimeError(f"graphormer model service error {exc.code}: {detail}") from exc
     except urllib.error.URLError as exc:
-        raise RuntimeError(
-            f"could not reach graphormer model service at {base_url}: {exc.reason}"
-        ) from exc
+        raise RuntimeError(f"could not reach graphormer model service at {base_url}: {exc.reason}") from exc
 
 
 def _predict(smiles_list: list[str], property_name: str) -> dict:

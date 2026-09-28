@@ -102,9 +102,17 @@ simulate_negolyte = ToolDefinition(
     return_spec=[
         ReturnSpec(name="cell", type=str, description="Reference cell id ('organic_dhps_ferrocyanide')"),
         ReturnSpec(name="overrides", type=dict, description="EZBattery parameters that were overridden"),
-        ReturnSpec(name="kpis", type=dict, description="Per-cycle efficiencies, energies, times, fade and voltage curve"),
-        ReturnSpec(name="negolyte", type=dict, description="Echoed inputs, estimated diffusivity and the anode parameters set"),
-        ReturnSpec(name="parameter_provenance", type=list, description="Per-override records: predicted / estimated / assumed_default / user"),
+        ReturnSpec(
+            name="kpis", type=dict, description="Per-cycle efficiencies, energies, times, fade and voltage curve"
+        ),
+        ReturnSpec(
+            name="negolyte", type=dict, description="Echoed inputs, estimated diffusivity and the anode parameters set"
+        ),
+        ReturnSpec(
+            name="parameter_provenance",
+            type=list,
+            description="Per-override records: predicted / estimated / assumed_default / user",
+        ),
         ReturnSpec(name="warnings", type=list, description="Reference-frame and other sanity warnings"),
     ],
     state_transition=StateTransition(
@@ -222,7 +230,9 @@ simulate_cell = ToolDefinition(
     return_spec=[
         ReturnSpec(name="cell", type=str, description="Reference cell id ('organic_dhps_ferrocyanide')"),
         ReturnSpec(name="overrides", type=dict, description="EZBattery parameters that were overridden"),
-        ReturnSpec(name="kpis", type=dict, description="Per-cycle efficiencies, energies, times, fade and voltage curve"),
+        ReturnSpec(
+            name="kpis", type=dict, description="Per-cycle efficiencies, energies, times, fade and voltage curve"
+        ),
     ],
     state_transition=StateTransition(
         produces=frozenset({"ezbattery.cell_simulated"}),
@@ -250,8 +260,14 @@ list_electrolyte_profiles = ToolDefinition(
     return_spec=[
         ReturnSpec(name="name", type=str, description="Profile id to pass as electrolyte_profile"),
         ReturnSpec(name="label", type=str, description="Human-readable regime description"),
-        ReturnSpec(name="calibrated", type=bool, description="Whether the values are literature-calibrated (else representative)"),
-        ReturnSpec(name="citation", type=str, description="Literature source (or representative note for polymer_laden)"),
+        ReturnSpec(
+            name="calibrated",
+            type=bool,
+            description="Whether the values are literature-calibrated (else representative)",
+        ),
+        ReturnSpec(
+            name="citation", type=str, description="Literature source (or representative note for polymer_laden)"
+        ),
         ReturnSpec(name="params", type=dict, description="Anode viscosity / density / conductivity the profile sets"),
     ],
     affordances=[

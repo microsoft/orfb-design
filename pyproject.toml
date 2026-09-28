@@ -33,12 +33,5 @@ where = ["."]
 include = ["servers*"]
 exclude = ["servers.*.*_tools*"]
 
-[tool.ruff]
-line-length = 120
-# Vendored third-party source is not linted as repository-owned code.
-extend-exclude = [
-    "servers/ezbattery/ezbattery_tools/src/ezbattery_tools/_vendor",
-]
-
 [tool.pytest.ini_options]
 testpaths = ["tests"]

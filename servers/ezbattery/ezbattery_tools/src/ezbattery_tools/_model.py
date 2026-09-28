@@ -255,7 +255,7 @@ def estimate_diffusivity_stokes_einstein(
         The estimated diffusion coefficient in m^2/s.
     """
     if not isinstance(molar_mass_g_per_mol, (int, float)) or isinstance(molar_mass_g_per_mol, bool):
-        raise ValueError("molar_mass_g_per_mol must be a number (g/mol)")
+        raise TypeError("molar_mass_g_per_mol must be a number (g/mol)")
     if molar_mass_g_per_mol <= 0:
         raise ValueError("molar_mass_g_per_mol must be positive")
     if viscosity_pa_s <= 0:
@@ -293,7 +293,7 @@ def _validate_overrides(overrides: Optional[dict]) -> dict:
     if overrides is None:
         return {}
     if not isinstance(overrides, dict):
-        raise ValueError("overrides must be a dict of EZBattery parameter names to values")
+        raise TypeError("overrides must be a dict of EZBattery parameter names to values")
     template = _load_template()
     clean: dict[str, Any] = {}
     for key, value in overrides.items():
@@ -311,7 +311,7 @@ def _downsample(values: list[float], max_points: int = _MAX_CURVE_POINTS) -> lis
     if n <= max_points:
         return [round(float(v), 6) for v in values]
     step = (n - 1) / (max_points - 1)
-    idx = sorted({int(round(i * step)) for i in range(max_points)} | {0, n - 1})
+    idx = sorted({round(i * step) for i in range(max_points)} | {0, n - 1})
     return [round(float(values[i]), 6) for i in idx]
 
 
@@ -364,7 +364,7 @@ def run_real_simulation(overrides: dict) -> dict:
 
     Raises on environment/model problems.
     """
-    from ezbattery_tools._vendor.EZBattery import BatteryParameter, RFB
+    from ezbattery_tools._vendor.EZBattery import RFB, BatteryParameter
 
     params = BatteryParameter(filepath=None)
     for key, value in _load_template().items():
@@ -437,9 +437,7 @@ def _build_negolyte_overrides(
     """
     if electrolyte_profile is not None and electrolyte_profile not in _ELECTROLYTE_PROFILES:
         available = ", ".join(_ELECTROLYTE_PROFILES)
-        raise ValueError(
-            f"unknown electrolyte_profile {electrolyte_profile!r}; available: {available}"
-        )
+        raise ValueError(f"unknown electrolyte_profile {electrolyte_profile!r}; available: {available}")
 
     mw_from_smiles = False
     charge_from_smiles = False
@@ -455,15 +453,16 @@ def _build_negolyte_overrides(
             charge_from_smiles = True
 
     if not isinstance(standard_potential, (int, float)) or isinstance(standard_potential, bool):
-        raise ValueError("standard_potential must be a number (volts)")
+        raise TypeError("standard_potential must be a number (volts)")
     if solubility_mol_per_L is not None:
         if not isinstance(solubility_mol_per_L, (int, float)) or isinstance(solubility_mol_per_L, bool):
             raise ValueError("solubility_mol_per_L must be a number (mol/L)")
         if solubility_mol_per_L <= 0:
             raise ValueError("solubility_mol_per_L must be positive")
-    if electron_number is not None:
-        if not isinstance(electron_number, int) or isinstance(electron_number, bool) or electron_number < 1:
-            raise ValueError("electron_number must be a positive integer")
+    if electron_number is not None and (
+        not isinstance(electron_number, int) or isinstance(electron_number, bool) or electron_number < 1
+    ):
+        raise ValueError("electron_number must be a positive integer")
     if molar_mass is not None:
         if not isinstance(molar_mass, (int, float)) or isinstance(molar_mass, bool):
             raise ValueError("molar_mass must be a number (g/mol)")
@@ -492,14 +491,18 @@ def _build_negolyte_overrides(
         calib_note = "" if spec["calibrated"] else " [PLACEHOLDER, not yet calibrated]"
         for param, value in spec["params"].items():
             _record(
-                param, float(value), source,
+                param,
+                float(value),
+                source,
                 f"'{electrolyte_profile}' supporting-electrolyte profile "
                 f"({spec['label']}); {spec['citation']}{calib_note}",
             )
     meta["electrolyte_profile"] = electrolyte_profile
 
     _record(
-        _ANODE_STANDARD_POTENTIAL, float(standard_potential), "predicted",
+        _ANODE_STANDARD_POTENTIAL,
+        float(standard_potential),
+        "predicted",
         "reduction standard potential from the redox predictor (graphormer)",
     )
     # Negolytes sit negative of the posolyte; a positive value usually signals a
@@ -513,12 +516,16 @@ def _build_negolyte_overrides(
 
     if solubility_mol_per_L is not None:
         _record(
-            _ANODE_CONCENTRATION, float(solubility_mol_per_L) * 1000.0, "predicted",
+            _ANODE_CONCENTRATION,
+            float(solubility_mol_per_L) * 1000.0,
+            "predicted",
             "aqueous solubility (mol/L) from the solubility predictor (soltrannet), x1000 -> mol/m^3",
         )
     if electron_number is not None:
         _record(
-            _ANODE_ELECTRON_NUMBER, int(electron_number), "predicted",
+            _ANODE_ELECTRON_NUMBER,
+            int(electron_number),
+            "predicted",
             "electrons transferred per molecule",
         )
 
@@ -544,38 +551,48 @@ def _build_negolyte_overrides(
         _record(_ANODE_OXIDANT_MOLAR_MASS, float(molar_mass), "user", mw_basis)
         _record(_ANODE_REDUCTANT_MOLAR_MASS, float(molar_mass), "user", mw_basis)
     else:
-        provenance.append({
-            "parameter": _ANODE_OXIDANT_DIFFUSIVITY,
-            "value": template[_ANODE_OXIDANT_DIFFUSIVITY],
-            "source": "assumed_default",
-            "basis": "DHPS reference diffusivity (pass smiles or molar_mass to estimate it)",
-        })
+        provenance.append(
+            {
+                "parameter": _ANODE_OXIDANT_DIFFUSIVITY,
+                "value": template[_ANODE_OXIDANT_DIFFUSIVITY],
+                "source": "assumed_default",
+                "basis": "DHPS reference diffusivity (pass smiles or molar_mass to estimate it)",
+            }
+        )
 
     if formal_charge is not None:
         charge_origin = "SMILES-derived" if charge_from_smiles else "supplied"
         _record(
-            _ANODE_OXIDANT_VALENCE, int(formal_charge), "estimated",
+            _ANODE_OXIDANT_VALENCE,
+            int(formal_charge),
+            "estimated",
             f"oxidized-form charge from the molecule's {charge_origin} formal charge "
             "(affects membrane crossover / Donnan)",
         )
         if electron_number is not None:
             _record(
-                _ANODE_REDUCTANT_VALENCE, int(formal_charge) - int(electron_number), "estimated",
+                _ANODE_REDUCTANT_VALENCE,
+                int(formal_charge) - int(electron_number),
+                "estimated",
                 "reduced-form charge = formal_charge - electron_number (reduction adds electrons)",
             )
 
     if reaction_rate_constant is not None:
         _record(
-            _ANODE_RATE_CONSTANT, float(reaction_rate_constant), "predicted",
+            _ANODE_RATE_CONSTANT,
+            float(reaction_rate_constant),
+            "predicted",
             "user-supplied electrochemical rate constant (m/s)",
         )
     else:
-        provenance.append({
-            "parameter": _ANODE_RATE_CONSTANT,
-            "value": template[_ANODE_RATE_CONSTANT],
-            "source": "assumed_default",
-            "basis": "DHPS reference kinetics (no per-molecule kinetics model yet)",
-        })
+        provenance.append(
+            {
+                "parameter": _ANODE_RATE_CONSTANT,
+                "value": template[_ANODE_RATE_CONSTANT],
+                "source": "assumed_default",
+                "basis": "DHPS reference kinetics (no per-molecule kinetics model yet)",
+            }
+        )
 
     if extra_overrides:
         for key, value in _validate_overrides(extra_overrides).items():
@@ -671,9 +688,16 @@ def simulate_negolyte(
         carry an honest confidence signal.
     """
     overrides, provenance, meta = _build_negolyte_overrides(
-        standard_potential, solubility_mol_per_L, electron_number, molar_mass,
-        formal_charge, active_density_kg_per_m3, reaction_rate_constant, extra_overrides,
-        smiles=smiles, electrolyte_profile=electrolyte_profile,
+        standard_potential,
+        solubility_mol_per_L,
+        electron_number,
+        molar_mass,
+        formal_charge,
+        active_density_kg_per_m3,
+        reaction_rate_constant,
+        extra_overrides,
+        smiles=smiles,
+        electrolyte_profile=electrolyte_profile,
     )
 
     result = simulate_cell(overrides)
@@ -733,22 +757,30 @@ def negolyte_sensitivity(
         over the grid, and the compact ``grid`` of (diffusivity_factor,
         rate_constant_factor) -> headline KPIs. No voltage curves are returned.
     """
-    for factors, label in ((diffusivity_factors, "diffusivity_factors"),
-                           (rate_constant_factors, "rate_constant_factors")):
+    for factors, label in (
+        (diffusivity_factors, "diffusivity_factors"),
+        (rate_constant_factors, "rate_constant_factors"),
+    ):
         if not factors or any((not isinstance(f, (int, float)) or isinstance(f, bool) or f <= 0) for f in factors):
             raise ValueError(f"{label} must be a non-empty sequence of positive numbers")
 
     base_overrides, _, meta = _build_negolyte_overrides(
-        standard_potential, solubility_mol_per_L, electron_number, molar_mass,
-        formal_charge, active_density_kg_per_m3, reaction_rate_constant, extra_overrides,
-        smiles=smiles, electrolyte_profile=electrolyte_profile,
+        standard_potential,
+        solubility_mol_per_L,
+        electron_number,
+        molar_mass,
+        formal_charge,
+        active_density_kg_per_m3,
+        reaction_rate_constant,
+        extra_overrides,
+        smiles=smiles,
+        electrolyte_profile=electrolyte_profile,
     )
     template = _load_template()
     base_diffusivity = base_overrides.get(_ANODE_OXIDANT_DIFFUSIVITY, template[_ANODE_OXIDANT_DIFFUSIVITY])
     base_rate = base_overrides.get(_ANODE_RATE_CONSTANT, template[_ANODE_RATE_CONSTANT])
 
-    _headline_keys = ("coulombic_efficiency", "voltage_efficiency", "energy_efficiency",
-                      "discharge_energy_wh")
+    _headline_keys = ("coulombic_efficiency", "voltage_efficiency", "energy_efficiency", "discharge_energy_wh")
 
     def _headline(overrides: dict) -> dict:
         fc = simulate_cell(overrides)["kpis"]["final_cycle"]
