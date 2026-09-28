@@ -75,7 +75,7 @@ not provide commercial-catalog data.
 1. Clone the repository and enter it:
 
    ```bash
-   git clone https://github.com/jakesmith_microsoft/orfb-design.git
+   git clone https://github.com/microsoft/orfb-design.git
    cd orfb-design
    ```
 

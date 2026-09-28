@@ -45,3 +45,13 @@ markdown_extensions:
 
 nav:
   - Home: index.md
+  - Servers:
+      - Overview: servers/index.md
+      - ORFB Hub: servers/hub.md
+      - ORFB Characterization: servers/orfb.md
+      - Graphormer: servers/graphormer.md
+      - RetroChimera: servers/retrochimera.md
+      - SolTranNet: servers/soltrannet.md
+      - EZBattery: servers/ezbattery.md
+  - Tutorials:
+      - Deploy and connect an agent: tutorials/deploy-and-use.md
