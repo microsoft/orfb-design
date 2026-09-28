@@ -29,14 +29,15 @@ minutes for one target. Calls still running after approximately 45 seconds are
 promoted to background jobs; submit one target per job and poll the returned
 job handle.
 
-## Runtime and assets
+## Open-source foundation
 
-The runtime installs:
+The synthesis planner comes from
+[`microsoft/retrochimera`](https://github.com/microsoft/retrochimera) 1.3.0. It
+uses [`microsoft/syntheseus`](https://github.com/microsoft/syntheseus) to run
+RetroStar multi-step search, with RDKit, PyTorch, and supporting graph packages
+providing the chemistry and model runtime.
 
-- [`microsoft/retrochimera`](https://github.com/microsoft/retrochimera) 1.3.0;
-- [`microsoft/syntheseus`](https://github.com/microsoft/syntheseus) for
-  RetroStar search; and
-- RDKit, PyTorch, and supporting graph packages.
+## Model and inventory assets
 
 The Pistachio-trained model is downloaded from the public
 [Figshare release](https://doi.org/10.6084/m9.figshare.30591107.v1). The model
