@@ -13,6 +13,7 @@
 #   make checkpoints             # stage all checkpoints (idempotent)
 #   make graphormer-checkpoints  # copy caller-supplied local files
 #   make retrochimera-checkpoint # download the public Figshare artifact
+#   make ezbattery-source        # fetch the pinned upstream EZBattery source
 #   make base-image   # build the shared base image (mcp-server-base:local)
 #   make build        # checkpoints + base-image + docker compose build
 #   make up           # build + docker compose up -d
@@ -30,7 +31,7 @@ GRAPHORMER_REDUCTION_CKPT := model-assets/graphormer/reduction_checkpoint_best.p
 GRAPHORMER_OXIDATION_CKPT := model-assets/graphormer/oxidation_checkpoint_best.pt
 RETRO_CKPT                := model-assets/retrochimera/pistachio/models.json
 
-.PHONY: all up build base-image checkpoints graphormer-checkpoints retrochimera-checkpoint down ps logs clean-checkpoints
+.PHONY: all up build base-image checkpoints graphormer-checkpoints retrochimera-checkpoint ezbattery-source down ps logs clean-checkpoints
 
 all: up
 
@@ -43,6 +44,9 @@ graphormer-checkpoints:
 
 retrochimera-checkpoint:
 	scripts/fetch_checkpoints.sh retrochimera
+
+ezbattery-source:
+	scripts/fetch_ezbattery_source.sh
 
 $(GRAPHORMER_REDUCTION_CKPT) $(GRAPHORMER_OXIDATION_CKPT):
 	scripts/fetch_checkpoints.sh graphormer

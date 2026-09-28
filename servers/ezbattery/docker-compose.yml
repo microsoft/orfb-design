@@ -4,8 +4,8 @@
 #   mkdir -p published_artifacts && chmod 1777 published_artifacts
 #   docker compose up --build
 #
-# EZBattery is pure Python and vendored in-kernel, so there is no external
-# checkpoint to mount. Simulation runs on CPU.
+# EZBattery is pure Python and fetched during the image build, so there is no
+# external checkpoint to mount. Simulation runs on CPU.
 
 services:
   ezbattery-server:

@@ -36,10 +36,11 @@ the most uncertain inputs (diffusivity, rate constant). Note the cell model does
 not consume a molar-mass field directly, so molar mass feeds only the diffusivity
 estimate and is echoed as metadata.
 
-The vendored EZBattery package (:mod:`ezbattery_tools._vendor.EZBattery`) is
-pure Python (numpy / scipy / pandas / ismember), so there is no external
-checkpoint to fetch or bake. The stack is imported lazily so this module stays
-importable during server setup. Simulation runs on CPU.
+The pinned upstream EZBattery package staged at
+:mod:`ezbattery_tools._vendor.EZBattery` is pure Python (numpy / scipy / pandas
+/ ismember), so there is no external checkpoint to fetch or bake. The stack is
+imported lazily so this module stays importable during server setup. Simulation
+runs on CPU.
 """
 
 from __future__ import annotations

@@ -172,7 +172,7 @@ services:
       SERVER_PUBLIC_URL: "http://localhost:8044"
       AGORA_PEER_REGISTRY: *peer-registry
       FASTMCP_HTTP_ALLOWED_HOSTS: *allowed-hosts
-      # EZBattery is pure Python and vendored in-kernel — no external checkpoint.
+      # EZBattery is pure Python and fetched at image build — no checkpoint.
       # Simulation is CPU only.
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/health"]

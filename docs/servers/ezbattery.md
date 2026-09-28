@@ -39,6 +39,8 @@ other adaptive Agora Workbench servers.
 
 The physics simulator is
 [`pnnl/EZBattery`](https://github.com/pnnl/EZBattery), developed by Pacific
-Northwest National Laboratory. Upstream does not publish a Python package, so
-the required source is vendored inside `ezbattery_tools` under its Simplified
-BSD license. Simulation is pure Python and runs on CPU.
+Northwest National Laboratory. Upstream does not publish an installable Python
+package, so the server fetches a pinned GitHub revision during the image build
+and stages its Python modules inside the execution environment. The source is
+used under its Simplified BSD license. Simulation is pure Python and runs on
+CPU.

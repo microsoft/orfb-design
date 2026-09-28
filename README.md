@@ -57,7 +57,7 @@ repository.
 | RetroChimera Pistachio-trained model | Downloaded from the [`microsoft/retrochimera`](https://github.com/microsoft/retrochimera) [Figshare release](https://doi.org/10.6084/m9.figshare.30591107.v1) by `scripts/fetch_checkpoints.sh` |
 | RetroChimera purchasability inventory | User-provided UTF-8 file containing one SMILES per line |
 | SolTranNet weights | Included by the upstream Python package |
-| EZBattery model | Source and reference-cell data are included under the upstream Simplified BSD license |
+| EZBattery model | Source is fetched from a pinned [`pnnl/EZBattery`](https://github.com/pnnl/EZBattery) commit during the image build; reference-cell data are included locally |
 
 The Graphormer checkpoint paths are needed when staging the files for the first
 time. Staged copies are stored under `model-assets/`, which is git-ignored.
@@ -230,6 +230,7 @@ inference is built into the Docker images.
 
 ```bash
 uv sync --extra test
+make ezbattery-source
 uv run pytest
 uv run --with ruff ruff check .
 ```
@@ -241,6 +242,7 @@ deployment/docker/base.Dockerfile  shared Agora Workbench base image
 servers/<domain>/                  domain server, tools, skill, and Docker files
 servers/hub/                       router that aggregates the domain servers
 scripts/fetch_checkpoints.sh       external model-asset staging
+scripts/fetch_ezbattery_source.sh  pinned upstream EZBattery source staging
 tests/                             local regression tests
 docker-compose.yml                 complete local network
 ```

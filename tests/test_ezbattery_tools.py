@@ -1,9 +1,13 @@
 """Tests for the ezbattery cell-simulation tools.
 
-The vendored EZBattery stack is pure Python (numpy / scipy / pandas / openpyxl /
-ismember), so these run real cell simulations. The numeric stack is provided by
-the ``test`` optional-dependency group (see the root ``pyproject.toml``).
+The pinned EZBattery source staged by scripts/fetch_ezbattery_source.sh is pure
+Python (numpy / scipy / pandas / openpyxl / ismember), so these run real cell
+simulations. The numeric stack is provided by the ``test`` optional-dependency
+group (see the root ``pyproject.toml``).
 """
+
+from importlib.resources import files
+from pathlib import Path
 
 import pytest
 from ezbattery_tools._model import _build_negolyte_overrides, estimate_diffusivity_stokes_einstein
@@ -13,6 +17,15 @@ from ezbattery_tools.negolyte import (
     negolyte_sensitivity,
     simulate_negolyte,
 )
+
+_ROOT = Path(__file__).resolve().parent.parent
+
+
+def test_upstream_source_provenance():
+    package = files("ezbattery_tools._vendor.EZBattery")
+    expected_commit = (_ROOT / "servers" / "ezbattery" / "EZBattery.COMMIT").read_text().strip()
+    assert package.joinpath("UPSTREAM_COMMIT").read_text().strip() == expected_commit
+    assert "Simplified BSD" in package.joinpath("LICENSE").read_text()
 
 
 def test_simulate_cell_real():
