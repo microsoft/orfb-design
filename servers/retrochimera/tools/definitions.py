@@ -30,7 +30,9 @@ predict_retrosynthesis = ToolDefinition(
         ReturnSpec(name="status", type=int, description="HTTP-style status code (200)"),
         ReturnSpec(name="attempts", type=int, description="Number of planning attempts"),
         ReturnSpec(name="routes", type=list, description="Synthesis routes (reactions, num_steps, catalog flag)"),
-        ReturnSpec(name="all_routes_resolved", type=bool, description="Whether all routes end in purchasable materials"),
+        ReturnSpec(
+            name="all_routes_resolved", type=bool, description="Whether all routes end in purchasable materials"
+        ),
         ReturnSpec(name="message", type=str, description="Optional status / diagnostic message"),
     ],
     state_transition=StateTransition(

@@ -101,7 +101,7 @@ def _maybe_recycle_worker_pools() -> None:
     LOGGER.info("Recycling rule application worker pools: %s", "; ".join(reasons))
     try:
         recycled = _model.recycle_rule_application_pools()
-    except Exception:  # noqa: BLE001 - never fail a completed request on a recycle
+    except Exception:
         LOGGER.exception("Failed to recycle rule application worker pools")
         return
 
@@ -125,13 +125,13 @@ class _Handler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(body)
 
-    def do_GET(self) -> None:  # noqa: N802 - BaseHTTPRequestHandler API
+    def do_GET(self) -> None:
         if self.path == "/health":
             self._send_json(200, {"status": "ok"})
         else:
             self._send_json(404, {"error": "not found"})
 
-    def do_POST(self) -> None:  # noqa: N802 - BaseHTTPRequestHandler API
+    def do_POST(self) -> None:
         if self.path != "/predict":
             self._send_json(404, {"error": "not found"})
             return
@@ -159,11 +159,11 @@ class _Handler(BaseHTTPRequestHandler):
                     # can never mask the planning exception being propagated.
                     try:
                         _maybe_recycle_worker_pools()
-                    except Exception:  # noqa: BLE001 - bookkeeping is never fatal
+                    except Exception:
                         LOGGER.exception("recycle guard failed")
         except ValueError as exc:  # bad input surfaced by the planner
             self._send_json(400, {"error": str(exc)})
-        except Exception as exc:  # noqa: BLE001 - report any planning failure
+        except Exception as exc:
             LOGGER.exception("retrosynthesis prediction failed")
             self._send_json(500, {"error": str(exc)})
         else:

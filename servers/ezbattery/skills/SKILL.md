@@ -121,17 +121,19 @@ Both tools return a `kpis` block:
 ```python
 # From upstream servers: reduction potential (V) and solubility (mol/L). Pass
 # the SMILES so molar mass and formal charge are derived automatically (RDKit).
-e_red = -0.85            # e.g. from graphormer, on the SHE frame
-sol = 10 ** (-0.3)       # e.g. from soltrannet logS
+e_red = -0.85  # e.g. from graphormer, on the SHE frame
+sol = 10 ** (-0.3)  # e.g. from soltrannet logS
 smiles = "Oc1cc(O)c(cc1[N+](C)(C)C)[N+](C)(C)C"  # candidate structure
-res = simulate_negolyte(standard_potential=e_red, solubility_mol_per_L=sol,
-                        electron_number=2, smiles=smiles, name="candidate-A")
+res = simulate_negolyte(
+    standard_potential=e_red, solubility_mol_per_L=sol, electron_number=2, smiles=smiles, name="candidate-A"
+)
 fc = res["kpis"]["final_cycle"]
 print(fc["energy_efficiency"], fc["discharge_energy_wh"])
 # Bracket the uncertain diffusivity / kinetics before trusting the number:
-sens = negolyte_sensitivity(standard_potential=e_red, solubility_mol_per_L=sol,
-                            electron_number=2, smiles=smiles, name="candidate-A")
-print(sens["ranges"]["energy_efficiency"])   # {min, max, span}
+sens = negolyte_sensitivity(
+    standard_potential=e_red, solubility_mol_per_L=sol, electron_number=2, smiles=smiles, name="candidate-A"
+)
+print(sens["ranges"]["energy_efficiency"])  # {min, max, span}
 ```
 
 Rank candidates by `discharge_energy_wh` (proxy for energy density) and

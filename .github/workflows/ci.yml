@@ -24,7 +24,9 @@ jobs:
         with:
           enable-cache: true
       - name: Run Ruff
-        run: uvx --from ruff==0.16.9 ruff check .
+        run: uvx --from ruff==0.16.9 ruff check --output-format=github .
+      - name: Check formatting
+        run: uvx --from ruff==0.16.9 ruff format --check .
 
   test:
     name: test

@@ -46,6 +46,7 @@ ROUTE_EXTRACTION_TIMEOUT_S = 30.0
 # it down (e.g. to 2). When the override is unset we omit the kwarg entirely so
 # the library applies its own (cgroup-aware) default.
 
+
 def _num_processes_override() -> Optional[int]:
     """Return the explicit rule-application worker count, or ``None`` for the
     library default (``cpu_count()``).
@@ -155,7 +156,7 @@ def recycle_rule_application_pools() -> int:
 
         try:
             server.close()
-        except Exception:  # noqa: BLE001 - a failed close must not block the re-fork
+        except Exception:
             LOGGER.exception("Error closing rule application pool for %s", type(submodel).__name__)
 
         # If this raises, the submodel is left with a closed pool and subsequent
@@ -250,7 +251,7 @@ def _annotate_routes_with_purchasability(routes: list[dict], inventory: Any) -> 
                 if smiles_str not in products_in_route:  # leaf / starting material
                     try:
                         purchasable = inventory.is_purchasable(Molecule(smiles_str))
-                    except Exception:
+                    except Exception:  # noqa: BLE001 - third-party inventory failures mean unavailable
                         purchasable = False
                     if not purchasable:
                         all_leaves_purchasable = False
@@ -272,7 +273,7 @@ def _annotate_routes_with_purchasability(routes: list[dict], inventory: Any) -> 
 
 def _run_real_retrosynthesis(smiles: str, num_results: int) -> dict:
     """Run RetroStar multi-step planning for one target."""
-    from typing import Sequence
+    from collections.abc import Sequence
 
     from syntheseus import Molecule
     from syntheseus.search.algorithms.best_first.retro_star import RetroStarSearch
@@ -318,11 +319,11 @@ def _run_real_retrosynthesis(smiles: str, num_results: int) -> dict:
                 route = _extract_route_from_nodes(route_nodes)
                 if route["reactions"]:
                     routes.append(route)
-        except Exception:
+        except Exception:  # noqa: BLE001 - extraction failure falls back to the single-step model
             routes = []
         if not routes:
             routes = _single_step_fallback(smiles, num_results, model)
-    except Exception:
+    except Exception:  # noqa: BLE001 - search failure falls back to the single-step model
         routes = _single_step_fallback(smiles, num_results, model)
 
     routes = _annotate_routes_with_purchasability(routes, inventory)

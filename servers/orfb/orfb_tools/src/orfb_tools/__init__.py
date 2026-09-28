@@ -14,6 +14,6 @@ from orfb_tools.tanimoto_similarity import tanimoto_similarity
 
 __all__ = [
     "molecular_properties",
-    "tanimoto_similarity",
     "sa_score",
+    "tanimoto_similarity",
 ]

@@ -27,9 +27,7 @@ _SERVICE_TIMEOUT_S = 3600.0
 def _predict_via_service(base_url: str, smiles: str, num_results: int) -> dict:
     url = base_url.rstrip("/") + "/predict"
     body = json.dumps({"smiles": smiles, "num_results": num_results}).encode("utf-8")
-    request = urllib.request.Request(
-        url, data=body, headers={"Content-Type": "application/json"}, method="POST"
-    )
+    request = urllib.request.Request(url, data=body, headers={"Content-Type": "application/json"}, method="POST")
     try:
         with urllib.request.urlopen(request, timeout=_SERVICE_TIMEOUT_S) as response:
             return json.loads(response.read().decode("utf-8"))
@@ -40,9 +38,7 @@ def _predict_via_service(base_url: str, smiles: str, num_results: int) -> dict:
             raise ValueError(detail) from exc
         raise RuntimeError(f"retrosynthesis model service error {exc.code}: {detail}") from exc
     except urllib.error.URLError as exc:
-        raise RuntimeError(
-            f"could not reach retrosynthesis model service at {base_url}: {exc.reason}"
-        ) from exc
+        raise RuntimeError(f"could not reach retrosynthesis model service at {base_url}: {exc.reason}") from exc
 
 
 def predict_retrosynthesis(smiles: str, num_results: int = 5) -> dict:
@@ -64,4 +60,3 @@ def predict_retrosynthesis(smiles: str, num_results: int = 5) -> dict:
     if service_url:
         return _predict_via_service(service_url, smiles, num_results)
     return _model.predict_retrosynthesis(smiles, num_results)
-

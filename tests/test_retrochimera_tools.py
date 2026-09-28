@@ -7,7 +7,6 @@ before any model is touched.
 """
 
 import pytest
-
 from retrochimera_tools.retrosynthesis import predict_retrosynthesis
 
 
@@ -96,9 +95,7 @@ def test_retrosynthesis_service_400_raises_value_error(monkeypatch):
     import urllib.request
 
     def fake_urlopen(request, timeout=None):
-        raise urllib.error.HTTPError(
-            request.full_url, 400, "Bad Request", {}, io.BytesIO(b"bad smiles")
-        )
+        raise urllib.error.HTTPError(request.full_url, 400, "Bad Request", {}, io.BytesIO(b"bad smiles"))
 
     monkeypatch.setenv("RETROCHIMERA_MODEL_SERVICE_URL", "http://127.0.0.1:8901")
     monkeypatch.setattr(urllib.request, "urlopen", fake_urlopen)
@@ -132,10 +129,7 @@ def upstream_rule_application_server():
 
     assert Version(installed.version) >= Version("1.3.0")
     package_dir = Path(installed.locate_file("retrochimera"))
-    original_modules = {
-        name: sys.modules.get(name)
-        for name in ("retrochimera", "retrochimera.chem")
-    }
+    original_modules = {name: sys.modules.get(name) for name in ("retrochimera", "retrochimera.chem")}
     existing_modules = set(sys.modules)
 
     package = types.ModuleType("retrochimera")
@@ -189,9 +183,7 @@ def test_finalize_sigkills_worker_that_ignores_sigterm(
     process, parent_conn = _spawn_unkillable_worker()
     pid = process.pid
     try:
-        upstream_rule_application_server.RuleApplicationServer._finalize_server(
-            {0: process}, {0: parent_conn}
-        )
+        upstream_rule_application_server.RuleApplicationServer._finalize_server({0: process}, {0: parent_conn})
 
         # A successful teardown ends in Process.close(), after which the Process
         # object refuses further queries — so assert on the OS, which is the real
@@ -212,8 +204,6 @@ def test_finalize_does_not_leak_process_objects(upstream_rule_application_server
     before = len(_children)
     for _ in range(3):
         process, parent_conn = _spawn_unkillable_worker()
-        upstream_rule_application_server.RuleApplicationServer._finalize_server(
-            {0: process}, {0: parent_conn}
-        )
+        upstream_rule_application_server.RuleApplicationServer._finalize_server({0: process}, {0: parent_conn})
 
     assert len(_children) == before, "Process objects leaked into multiprocessing._children"

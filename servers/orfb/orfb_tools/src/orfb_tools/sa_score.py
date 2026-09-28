@@ -21,10 +21,10 @@ _UNIT = "dimensionless (lower is easier to synthesize, typical range 1-10)"
 _contrib_candidates = []
 try:
     from rdkit.Chem import RDConfig
-
+except ImportError:  # pragma: no cover - depends on the RDKit distribution
+    RDConfig = None
+if RDConfig is not None:
     _contrib_candidates.append(RDConfig.RDContribDir)
-except Exception:  # pragma: no cover - RDConfig should always be importable
-    pass
 _contrib_candidates.append(os.path.join(os.environ.get("CONDA_PREFIX", ""), "share", "RDKit", "Contrib"))
 
 for _contrib in _contrib_candidates:
@@ -63,7 +63,9 @@ def sa_score(smiles_list: list[str]) -> dict:
             continue
         try:
             score = float(sascorer.calculateScore(mol))
-            results.append({"smiles": smiles, "status": "succeeded", "sa_score": round(score, 4), "failure_reason": None})
+            results.append(
+                {"smiles": smiles, "status": "succeeded", "sa_score": round(score, 4), "failure_reason": None}
+            )
         except Exception as exc:  # noqa: BLE001 - report per-molecule failure
             results.append(
                 {"smiles": smiles, "status": "failed", "sa_score": 10.0, "failure_reason": f"SA score error: {exc}"}

@@ -1,0 +1,13 @@
+line-length = 120
+extend-exclude = [
+    "*.ipynb",
+    "**/experimental/**",
+    "**/external/**",
+    "servers/ezbattery/ezbattery_tools/src/ezbattery_tools/_vendor/",
+]
+
+[lint]
+ignore = ["UP045"]
+
+[format]
+docstring-code-format = true

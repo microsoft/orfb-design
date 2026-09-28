@@ -102,8 +102,7 @@ config = ServerConfig(
         # (models/template_localization.py), and ``pandas`` (rule application).
         # ``rdkit`` is pulled in transitively. CPU torch wheels run fine without
         # a GPU (submodels just run sequentially).
-        "python -m pip install retrochimera==1.3.0 syntheseus "
-        "pytorch_lightning torch_geometric pandas",
+        ("python -m pip install retrochimera==1.3.0 syntheseus pytorch_lightning torch_geometric pandas"),
         # In-kernel RetroChimera tools (declares no runtime deps).
         f"python -m pip install --no-deps {_RETRO_TOOLS_PKG}",
     ],

@@ -90,7 +90,7 @@ config = ServerConfig(
             'ln -sf x86_64-conda-linux-gnu-g++ "$CONDA_PREFIX/bin/g++" && '
             'ln -sf x86_64-conda-linux-gnu-c++ "$CONDA_PREFIX/bin/c++" && '
             'ln -sf x86_64-conda-linux-gnu-cc "$CONDA_PREFIX/bin/cc" && '
-            "printf '#!/usr/bin/env bash\\ncommand -v \"$@\"\\n' > \"$CONDA_PREFIX/bin/which\" && "
+            'printf \'#!/usr/bin/env bash\\ncommand -v "$@"\\n\' > "$CONDA_PREFIX/bin/which" && '
             'chmod +x "$CONDA_PREFIX/bin/which"'
         ),
         f'test -f "{_GRAPHORMER_SOURCE_DIR}/fairseq/setup.py"',
@@ -110,7 +110,7 @@ config = ServerConfig(
         (
             f'cd "{_GRAPHORMER_SOURCE_DIR}" && python -c \'import numpy, pyximport; '
             'pyximport.install(setup_args={"include_dirs": numpy.get_include()}, '
-            'inplace=True, language_level=3); import graphormer.data.algos\''
+            "inplace=True, language_level=3); import graphormer.data.algos'"
         ),
         # In-kernel Graphormer tools (build isolation -> modern setuptools for
         # the PEP 621 metadata; the env's pinned setuptools 59.5.0 is too old).

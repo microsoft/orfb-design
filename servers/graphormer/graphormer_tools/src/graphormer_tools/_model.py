@@ -238,16 +238,31 @@ def run_real_inference(smiles_list: list[str], property_name: str) -> list[dict]
             item = _smiles_to_item(smiles)
         except Exception as exc:  # noqa: BLE001 - per-molecule failure
             item = None
-            results.append({"smiles": smiles, "status": "failed", "potential": None, "unit": UNIT,
-                            "failure_reason": f"SMILES to graph conversion failed: {exc}"})
+            results.append(
+                {
+                    "smiles": smiles,
+                    "status": "failed",
+                    "potential": None,
+                    "unit": UNIT,
+                    "failure_reason": f"SMILES to graph conversion failed: {exc}",
+                }
+            )
         else:
             if item["x"] is not None and item["x"].shape[0] > MAX_ATOMS:
-                results.append({"smiles": smiles, "status": "failed", "potential": None, "unit": UNIT,
-                                "failure_reason": f"Exceeds max of {MAX_ATOMS} non-H atoms"})
+                results.append(
+                    {
+                        "smiles": smiles,
+                        "status": "failed",
+                        "potential": None,
+                        "unit": UNIT,
+                        "failure_reason": f"Exceeds max of {MAX_ATOMS} non-H atoms",
+                    }
+                )
             else:
                 valid_indices.append(index)
-                results.append({"smiles": smiles, "status": "succeeded", "potential": None, "unit": UNIT,
-                                "failure_reason": None})
+                results.append(
+                    {"smiles": smiles, "status": "succeeded", "potential": None, "unit": UNIT, "failure_reason": None}
+                )
         items.append(item)
 
     if valid_indices:

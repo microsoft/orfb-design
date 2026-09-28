@@ -44,13 +44,13 @@ class _Handler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(body)
 
-    def do_GET(self) -> None:  # noqa: N802 - BaseHTTPRequestHandler API
+    def do_GET(self) -> None:
         if self.path == "/health":
             self._send_json(200, {"status": "ok"})
         else:
             self._send_json(404, {"error": "not found"})
 
-    def do_POST(self) -> None:  # noqa: N802 - BaseHTTPRequestHandler API
+    def do_POST(self) -> None:
         if self.path != "/predict":
             self._send_json(404, {"error": "not found"})
             return
@@ -69,7 +69,7 @@ class _Handler(BaseHTTPRequestHandler):
                 result = _model.predict(smiles_list, property_name)
         except ValueError as exc:  # bad input surfaced by the model
             self._send_json(400, {"error": str(exc)})
-        except Exception as exc:  # noqa: BLE001 - report any inference failure
+        except Exception as exc:
             LOGGER.exception("redox prediction failed")
             self._send_json(500, {"error": str(exc)})
         else:
