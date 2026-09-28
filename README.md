@@ -246,8 +246,9 @@ docker-compose.yml                 complete local network
 ```
 
 Agora Workbench is installed from public PyPI and pinned in
-[`pyproject.toml`](pyproject.toml). The Graphormer and RetroChimera images build
-their specialized scientific environments separately.
+[`pyproject.toml`](https://github.com/microsoft/orfb-design/blob/main/pyproject.toml).
+The Graphormer and RetroChimera images build their specialized scientific
+environments separately.
 
 ## Security
 
