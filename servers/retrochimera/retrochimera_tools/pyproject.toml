@@ -1,0 +1,17 @@
+[project]
+name = "retrochimera-tools"
+version = "0.1.0"
+description = "In-kernel RetroChimera retrosynthesis route prediction tools for the retrochimera MCP server."
+requires-python = ">=3.11"
+# The heavy planning stack (syntheseus, rdkit, the retrochimera model package)
+# is provided by the execution environment; this package declares no runtime
+# dependencies so it stays importable during server setup without them (real
+# planning requires that stack plus the model checkpoints).
+dependencies = []
+
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]

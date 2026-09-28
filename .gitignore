@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.eggs/
+
+# Virtual envs / uv
+.venv/
+
+# Caches
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# OS
+.DS_Store
+
+# Runtime artifacts
+published_artifacts/
+
+# Baked model checkpoints (large binaries staged into the Docker build context;
+# fetched from blob / staged locally, never committed to git).
+model-assets/
+
+# Local checkpoint download cache (raw archives before staging into model-assets/).
+.cache/

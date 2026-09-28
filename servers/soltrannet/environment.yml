@@ -1,0 +1,20 @@
+# SolTranNet aqueous-solubility environment (CPU inference).
+#
+# A clean, modern pip stack (like retrochimera): conda provides the interpreter,
+# the Agora kernel bits (ipykernel + dill), and the scientific base (numpy +
+# rdkit); the model itself (soltrannet) and a CPU build of torch are pip-installed
+# in the server's additional_commands.
+#
+# SolTranNet's trained weights ship inside its pip package, so there is no
+# external checkpoint to fetch or bake.
+name: soltrannet
+channels:
+  - conda-forge
+dependencies:
+  - python=3.11
+  - pip
+  - setuptools<81
+  - ipykernel
+  - dill>=0.3.8
+  - numpy
+  - rdkit

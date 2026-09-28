@@ -1,0 +1,31 @@
+# SolTranNet Aqueous-Solubility MCP Server — local development
+#
+# Build the agora-workbench base image first (see Dockerfile header), then:
+#   mkdir -p published_artifacts && chmod 1777 published_artifacts
+#   docker compose up --build
+#
+# SolTranNet's trained weights ship inside its pip package, so there is no
+# external checkpoint to mount. Inference runs on CPU.
+
+services:
+  soltrannet-server:
+    build:
+      context: ../..
+      dockerfile: servers/soltrannet/Dockerfile
+    ports:
+      - "127.0.0.1:8043:8000"
+    volumes:
+      - ./published_artifacts:/tmp/published_artifacts
+    environment:
+      PORT: "8000"
+      HOST: "0.0.0.0"
+      AGORA_ALLOW_UNAUTHENTICATED_REMOTE: "1"
+      PUBLISH_DIR: "/tmp/published_artifacts"
+      SERVER_PUBLIC_URL: "http://localhost:8043"
+      AGORA_PEER_REGISTRY: '{"orfb":"http://orfb-server:8000","graphormer":"http://graphormer-server:8000","retrochimera":"http://retrochimera-server:8000","soltrannet":"http://soltrannet-server:8000"}'
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 120s

@@ -1,0 +1,15 @@
+# RetroChimera planning environment (CPU inference).
+#
+# A clean, modern pip stack (unlike graphormer): conda provides only the
+# interpreter + the Agora kernel bits; the heavy planning stack (retrochimera,
+# syntheseus, torch, rdkit, ...) is pip-installed in additional_commands.
+#
+# ``ipykernel`` + ``dill`` are required by the Agora CodeExecutionServer kernel.
+name: retrochimera
+channels:
+  - conda-forge
+dependencies:
+  - python=3.11
+  - pip
+  - ipykernel
+  - dill>=0.3.8

@@ -1,0 +1,31 @@
+# EZBattery Cell-Level RFB Simulation MCP Server — local development
+#
+# Build the agora-workbench base image first (see Dockerfile header), then:
+#   mkdir -p published_artifacts && chmod 1777 published_artifacts
+#   docker compose up --build
+#
+# EZBattery is pure Python and vendored in-kernel, so there is no external
+# checkpoint to mount. Simulation runs on CPU.
+
+services:
+  ezbattery-server:
+    build:
+      context: ../..
+      dockerfile: servers/ezbattery/Dockerfile
+    ports:
+      - "127.0.0.1:8044:8000"
+    volumes:
+      - ./published_artifacts:/tmp/published_artifacts
+    environment:
+      PORT: "8000"
+      HOST: "0.0.0.0"
+      AGORA_ALLOW_UNAUTHENTICATED_REMOTE: "1"
+      PUBLISH_DIR: "/tmp/published_artifacts"
+      SERVER_PUBLIC_URL: "http://localhost:8044"
+      AGORA_PEER_REGISTRY: '{"orfb":"http://orfb-server:8000","graphormer":"http://graphormer-server:8000","retrochimera":"http://retrochimera-server:8000","soltrannet":"http://soltrannet-server:8000","ezbattery":"http://ezbattery-server:8000"}'
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 120s

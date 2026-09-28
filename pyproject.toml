@@ -1,0 +1,44 @@
+[project]
+name = "orfb-design"
+version = "0.1.0"
+description = "Agora Workbench MCP server for organic redox-flow-battery (ORFB) molecule design."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "agora-workbench[azure]==0.3.1",
+]
+
+[project.optional-dependencies]
+# Tools needed to run the RDKit-native tool implementations and tests outside
+# the conda execution kernel (the kernel itself provides RDKit via conda).
+test = [
+    "pytest>=8.0",
+    "rdkit>=2024.3.1",
+    # The vendored EZBattery stack is pure Python, so its ezbattery tests run
+    # real simulations in CI once its numeric dependencies are available. numpy
+    # is pinned <2 to match the ezbattery conda kernel (see its environment.yml).
+    "numpy<2",
+    "scipy",
+    "pandas",
+    "openpyxl",
+    "ismember",
+]
+
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["servers*"]
+exclude = ["servers.*.*_tools*"]
+
+[tool.ruff]
+line-length = 120
+# Vendored third-party source is not linted as repository-owned code.
+extend-exclude = [
+    "servers/ezbattery/ezbattery_tools/src/ezbattery_tools/_vendor",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

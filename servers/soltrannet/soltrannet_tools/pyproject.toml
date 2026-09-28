@@ -1,0 +1,17 @@
+[project]
+name = "soltrannet-tools"
+version = "0.1.0"
+description = "In-kernel SolTranNet aqueous-solubility prediction tools for the soltrannet MCP server."
+requires-python = ">=3.9"
+# The inference stack (soltrannet, torch, rdkit, numpy) is provided by the conda
+# execution environment when real inference is enabled; this package itself
+# declares no runtime dependencies so it stays importable during server setup
+# without them.
+dependencies = []
+
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]

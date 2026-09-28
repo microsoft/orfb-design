@@ -1,0 +1,25 @@
+# EZBattery cell-level RFB simulation environment (CPU).
+#
+# EZBattery (PNNL, Simplified BSD) is pure Python — no compiled model, no
+# external checkpoint to fetch or bake. Its numeric stack (numpy, scipy, pandas,
+# openpyxl) plus the Agora kernel bits (ipykernel + dill) come from conda; the
+# small pip-only ``ismember`` helper and the in-kernel tools package are
+# installed in the server's additional_commands. rdkit is included so
+# simulate_negolyte can derive molar mass and formal charge from a SMILES.
+#
+# numpy is pinned <2: EZBattery's upstream README pins numpy 1.24.3 / scipy
+# 1.14.0 and warns that other versions can shift results slightly; the wiring
+# was validated on numpy 1.26.x, so we stay on the numpy 1.x line.
+name: ezbattery
+channels:
+  - conda-forge
+dependencies:
+  - python=3.11
+  - pip
+  - ipykernel
+  - dill>=0.3.8
+  - numpy<2
+  - scipy
+  - pandas
+  - openpyxl
+  - rdkit

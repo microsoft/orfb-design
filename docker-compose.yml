@@ -1,0 +1,208 @@
+# ORFB Design network — full multi-server stack.
+#
+# Brings up the three domain servers plus the aggregating hub on one Docker
+# network:
+#
+#   orfb-hub          :8050  → unified RouterServer entry point (point agents here)
+#   orfb-server       :8040  → RDKit molecular characterization
+#   graphormer-server :8041  → redox potential prediction (real model, CPU)
+#   retrochimera-server :8042 → retrosynthesis route planning (real model, CPU)
+#   soltrannet-server :8043  → aqueous-solubility (logS) prediction (real model, CPU)
+#   ezbattery-server  :8044  → cell-level RFB simulation (device KPIs, CPU)
+#
+# Prerequisite — build the PyPI-backed agora-workbench base image:
+#   make base-image
+#
+# Then, from this directory:
+#   mkdir -p published_artifacts && chmod 1777 published_artifacts
+#   docker compose up --build
+#
+# Servers are unauthenticated (noop auth) and bound to localhost only. Do not
+# expose them to untrusted networks. Within the Docker network, kernels reach
+# each other (and the hub reaches upstreams) via service-name URLs, set through
+# the shared AGORA_PEER_REGISTRY below.
+
+x-peer-registry: &peer-registry >-
+  {"orfb":"http://orfb-server:8000","graphormer":"http://graphormer-server:8000","retrochimera":"http://retrochimera-server:8000","soltrannet":"http://soltrannet-server:8000","ezbattery":"http://ezbattery-server:8000"}
+
+# FastMCP (>=3.4) enforces DNS-rebinding protection, rejecting any Host header
+# not in {127.0.0.1, localhost, ::1} with 421 Misdirected Request. Inside the
+# Docker network the hub and kernels reach peers via service-name URLs (Host:
+# <service>:8000), so those hostnames must be allowlisted. Ports are stripped
+# before matching, so the "*-server" / "orfb-hub" fnmatch patterns suffice.
+x-allowed-hosts: &allowed-hosts '["*-server", "orfb-hub"]'
+
+services:
+  orfb-server:
+    build:
+      context: .
+      dockerfile: servers/orfb/Dockerfile
+    ports:
+      - "127.0.0.1:8040:8000"
+    volumes:
+      - ./published_artifacts:/tmp/published_artifacts
+    environment:
+      PORT: "8000"
+      HOST: "0.0.0.0"
+      AGORA_ALLOW_UNAUTHENTICATED_REMOTE: "1"
+      PUBLISH_DIR: "/tmp/published_artifacts"
+      SERVER_PUBLIC_URL: "http://localhost:8040"
+      AGORA_PEER_REGISTRY: *peer-registry
+      FASTMCP_HTTP_ALLOWED_HOSTS: *allowed-hosts
+      BLOB_PUBLISH_ACCOUNT_URL: "${BLOB_PUBLISH_ACCOUNT_URL:-}"
+      BLOB_PUBLISH_CONTAINER: "${BLOB_PUBLISH_CONTAINER:-artifacts}"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 120s
+
+  graphormer-server:
+    build:
+      context: .
+      dockerfile: servers/graphormer/Dockerfile
+    ports:
+      - "127.0.0.1:8041:8000"
+    volumes:
+      - ./published_artifacts:/tmp/published_artifacts
+    environment:
+      PORT: "8000"
+      HOST: "0.0.0.0"
+      AGORA_ALLOW_UNAUTHENTICATED_REMOTE: "1"
+      PUBLISH_DIR: "/tmp/published_artifacts"
+      SERVER_PUBLIC_URL: "http://localhost:8041"
+      AGORA_PEER_REGISTRY: *peer-registry
+      FASTMCP_HTTP_ALLOWED_HOSTS: *allowed-hosts
+      # Redox checkpoints are baked into the image at /app/checkpoints. CPU only.
+      GRAPHORMER_CHECKPOINT_DIR: "${GRAPHORMER_CHECKPOINT_DIR:-/app/checkpoints}"
+      GRAPHORMER_DEVICE: "${GRAPHORMER_DEVICE:-cpu}"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      # The graphormer model sidecar warm-loads both redox checkpoints once per
+      # container before serving; match the sidecar readiness_timeout_s (300s).
+      start_period: 300s
+
+  retrochimera-server:
+    build:
+      context: .
+      dockerfile: servers/retrochimera/Dockerfile
+    ports:
+      - "127.0.0.1:8042:8000"
+    volumes:
+      - ./published_artifacts:/tmp/published_artifacts
+    environment:
+      PORT: "8000"
+      HOST: "0.0.0.0"
+      AGORA_ALLOW_UNAUTHENTICATED_REMOTE: "1"
+      PUBLISH_DIR: "/tmp/published_artifacts"
+      SERVER_PUBLIC_URL: "http://localhost:8042"
+      AGORA_PEER_REGISTRY: *peer-registry
+      FASTMCP_HTTP_ALLOWED_HOSTS: *allowed-hosts
+      # Pistachio checkpoint is baked into the image at /app/checkpoints. CPU only.
+      RETROCHIMERA_CHECKPOINT_DIR: "${RETROCHIMERA_CHECKPOINT_DIR:-/app/checkpoints}"
+      # Required container path to a separately mounted, user-supplied
+      # one-SMILES-per-line purchasability inventory.
+      RETROCHIMERA_INVENTORY_PATH: "${RETROCHIMERA_INVENTORY_PATH:-}"
+      # Rule-application worker pool size. Each worker holds a shard of the
+      # ~146k-rule base, so more workers = smaller shards + more parallel rule
+      # application = faster planning, at the cost of per-process RAM overhead.
+      # Unset (the default) uses the library's cpu_count(). Set it low (e.g. 2)
+      # on RAM-constrained hosts.
+      RETROCHIMERA_NUM_PROCESSES: "${RETROCHIMERA_NUM_PROCESSES:-}"
+      # Rule-application worker pools are re-forked every N predictions as
+      # defence-in-depth against memory growth inside those long-lived workers.
+      # Costs a rulebase reload (not a model reload); "0" disables.
+      RETROCHIMERA_RECYCLE_AFTER_JOBS: "${RETROCHIMERA_RECYCLE_AFTER_JOBS:-100}"
+      # Additionally recycle when sidecar + worker RSS exceeds this many MiB.
+      # Unset/"0" disables; set it a few GB below the host's RAM to head off the
+      # swap-thrashing that makes planning look like it has hung.
+      RETROCHIMERA_RECYCLE_RSS_MB: "${RETROCHIMERA_RECYCLE_RSS_MB:-0}"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      # The retrochimera model sidecar loads a ~10 GB planning stack once per
+      # container before the server serves; give it headroom to match the
+      # sidecar readiness_timeout_s (600s) so startup isn't marked unhealthy.
+      start_period: 600s
+
+  soltrannet-server:
+    build:
+      context: .
+      dockerfile: servers/soltrannet/Dockerfile
+    ports:
+      - "127.0.0.1:8043:8000"
+    volumes:
+      - ./published_artifacts:/tmp/published_artifacts
+    environment:
+      PORT: "8000"
+      HOST: "0.0.0.0"
+      AGORA_ALLOW_UNAUTHENTICATED_REMOTE: "1"
+      PUBLISH_DIR: "/tmp/published_artifacts"
+      SERVER_PUBLIC_URL: "http://localhost:8043"
+      AGORA_PEER_REGISTRY: *peer-registry
+      FASTMCP_HTTP_ALLOWED_HOSTS: *allowed-hosts
+      # SolTranNet's trained weights ship inside its pip package — no external
+      # checkpoint. Inference is CPU only.
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 120s
+
+  ezbattery-server:
+    build:
+      context: .
+      dockerfile: servers/ezbattery/Dockerfile
+    ports:
+      - "127.0.0.1:8044:8000"
+    volumes:
+      - ./published_artifacts:/tmp/published_artifacts
+    environment:
+      PORT: "8000"
+      HOST: "0.0.0.0"
+      AGORA_ALLOW_UNAUTHENTICATED_REMOTE: "1"
+      PUBLISH_DIR: "/tmp/published_artifacts"
+      SERVER_PUBLIC_URL: "http://localhost:8044"
+      AGORA_PEER_REGISTRY: *peer-registry
+      FASTMCP_HTTP_ALLOWED_HOSTS: *allowed-hosts
+      # EZBattery is pure Python and vendored in-kernel — no external checkpoint.
+      # Simulation is CPU only.
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 120s
+
+  orfb-hub:
+    build:
+      context: .
+      dockerfile: servers/hub/Dockerfile
+    ports:
+      - "127.0.0.1:8050:8000"
+    environment:
+      PORT: "8000"
+      HOST: "0.0.0.0"
+      AGORA_ALLOW_UNAUTHENTICATED_REMOTE: "1"
+      SERVER_PUBLIC_URL: "http://localhost:8050"
+      # Upstream URLs resolve from AGORA_PEER_REGISTRY (service names on the network).
+      AGORA_PEER_REGISTRY: *peer-registry
+      FASTMCP_HTTP_ALLOWED_HOSTS: *allowed-hosts
+    depends_on:
+      orfb-server:
+        condition: service_healthy
+      graphormer-server:
+        condition: service_healthy
+      retrochimera-server:
+        condition: service_healthy
+      soltrannet-server:
+        condition: service_healthy
+      ezbattery-server:
+        condition: service_healthy

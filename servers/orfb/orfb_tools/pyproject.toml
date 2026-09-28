@@ -1,0 +1,16 @@
+[project]
+name = "orfb-tools"
+version = "0.1.0"
+description = "Organic redox-flow-battery molecule design tool implementations for the ORFB MCP server."
+requires-python = ">=3.11"
+# RDKit and scientific packages are provided by the conda execution
+# environment. The redox and retrosynthesis predictors are thin HTTP clients
+# (stdlib urllib only), so this package declares no runtime dependencies.
+dependencies = []
+
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]

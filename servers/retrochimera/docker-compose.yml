@@ -1,0 +1,39 @@
+# RetroChimera Retrosynthesis MCP Server — local development
+#
+# Build the agora-workbench base image first (see Dockerfile header), then:
+#   mkdir -p published_artifacts && chmod 1777 published_artifacts
+#   docker compose up --build
+
+services:
+  retrochimera-server:
+    build:
+      context: ../..
+      dockerfile: servers/retrochimera/Dockerfile
+    ports:
+      - "127.0.0.1:8042:8000"
+    volumes:
+      - ./published_artifacts:/tmp/published_artifacts
+      # Mount real model checkpoints here and set RETROCHIMERA_CHECKPOINT_DIR to enable planning:
+      # - /host/path/to/checkpoints:/app/checkpoints:ro
+      # Mount a user-supplied purchasability inventory:
+      # - /host/path/inventory.smi:/data/retrochimera-inventory.smi:ro
+    environment:
+      PORT: "8000"
+      HOST: "0.0.0.0"
+      AGORA_ALLOW_UNAUTHENTICATED_REMOTE: "1"
+      PUBLISH_DIR: "/tmp/published_artifacts"
+      SERVER_PUBLIC_URL: "http://localhost:8042"
+      # RETROCHIMERA_CHECKPOINT_DIR: "/app/checkpoints"
+      # RETROCHIMERA_INVENTORY_PATH: "/data/retrochimera-inventory.smi"
+      RETROCHIMERA_CHECKPOINT_DIR: "${RETROCHIMERA_CHECKPOINT_DIR:-}"
+      RETROCHIMERA_INVENTORY_PATH: "${RETROCHIMERA_INVENTORY_PATH:-}"
+      # See the root docker-compose.yml for what these tune.
+      RETROCHIMERA_RECYCLE_AFTER_JOBS: "${RETROCHIMERA_RECYCLE_AFTER_JOBS:-100}"
+      RETROCHIMERA_RECYCLE_RSS_MB: "${RETROCHIMERA_RECYCLE_RSS_MB:-0}"
+      AGORA_PEER_REGISTRY: '{"orfb":"http://orfb-server:8000","graphormer":"http://graphormer-server:8000","retrochimera":"http://retrochimera-server:8000"}'
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 120s
