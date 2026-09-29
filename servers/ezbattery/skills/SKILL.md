@@ -16,8 +16,9 @@ descriptors); EZBattery turns those into **cell KPIs** for a validated organic
 **DHPS–ferrocyanide** aqueous reference cell.
 
 EZBattery (Pacific Northwest National Laboratory, Simplified BSD) is a fast,
-pure-Python cell/system-level RFB physics simulator. It is vendored in-kernel;
-there is no external checkpoint. Simulation runs on CPU.
+pure-Python cell/system-level RFB physics simulator. Its source is fetched from
+a pinned upstream revision during the image build; there is no external
+checkpoint. Simulation runs on CPU.
 
 ## Tools
 

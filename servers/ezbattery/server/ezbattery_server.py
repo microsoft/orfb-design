@@ -13,10 +13,11 @@ validated organic DHPS-ferrocyanide reference cell and reports cell KPIs
 and the voltage/SOC curve).
 
 EZBattery is pure Python (numpy / scipy / pandas / openpyxl / ismember) and its
-source is **vendored** (``ezbattery_tools._vendor.EZBattery``) because upstream
-ships no pip package. There is therefore no external checkpoint to fetch or bake.
-The numeric stack is installed into the conda kernel at build time (see
-``ENVIRONMENT_YML`` / ``additional_commands``). Simulation runs on CPU.
+source is fetched from a pinned upstream GitHub commit during the image build
+because upstream ships no installable Python package. There is no external
+checkpoint to fetch or bake. The numeric stack is installed into the conda
+kernel at build time (see ``ENVIRONMENT_YML`` / ``additional_commands``).
+Simulation runs on CPU.
 
 Usage:
     python -m servers.ezbattery.server.ezbattery_server
@@ -66,7 +67,7 @@ EZBATTERY_STATES = [
 # EZBattery simulation environment (see environment.yml). The interpreter, Agora
 # kernel bits and the numeric stack (numpy<2, scipy, pandas, openpyxl) come from
 # conda; the pip-only ``ismember`` helper and the in-kernel tools package (which
-# vendors the EZBattery source) are pip-installed in additional_commands below.
+# contains the staged upstream EZBattery source) are pip-installed below.
 ENVIRONMENT_YML = _ENVIRONMENT_FILE.read_text(encoding="utf-8")
 
 config = ServerConfig(
@@ -95,7 +96,7 @@ config = ServerConfig(
     additional_commands=[
         # Small pip-only helper EZBattery imports (not on conda-forge).
         "python -m pip install ismember",
-        # In-kernel EZBattery tools (declares no runtime deps; vendors EZBattery).
+        # In-kernel tools package with the staged upstream EZBattery modules.
         f"python -m pip install --no-deps {_EZBATTERY_TOOLS_PKG}",
     ],
     peer_registry=peer_registry_for("ezbattery"),

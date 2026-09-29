@@ -41,6 +41,8 @@ jobs:
         with:
           enable-cache: true
           cache-dependency-glob: uv.lock
+      - name: Fetch pinned EZBattery source
+        run: scripts/fetch_ezbattery_source.sh
       - name: Install test dependencies
         run: uv sync --frozen --extra test
       - name: Run tests

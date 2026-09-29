@@ -5,9 +5,9 @@ description = "In-kernel EZBattery cell-level RFB simulation tools for the ezbat
 requires-python = ">=3.9"
 # The numeric stack (numpy, scipy, pandas, openpyxl, ismember) is provided by the
 # conda execution environment; this package itself declares no runtime
-# dependencies so it stays importable during server setup without them. The
-# EZBattery source is vendored (see _vendor/EZBattery, PNNL, Simplified BSD)
-# because upstream ships no pip package.
+# dependencies so it stays importable during server setup without them.
+# scripts/fetch_ezbattery_source.sh stages the pinned upstream EZBattery modules
+# under _vendor/EZBattery because upstream ships no installable Python package.
 dependencies = []
 
 [build-system]
@@ -19,4 +19,4 @@ where = ["src"]
 
 [tool.setuptools.package-data]
 "ezbattery_tools.data" = ["*.json"]
-"ezbattery_tools._vendor.EZBattery" = ["LICENSE"]
+"ezbattery_tools._vendor.EZBattery" = ["LICENSE", "UPSTREAM_COMMIT"]

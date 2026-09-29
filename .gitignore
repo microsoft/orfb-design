@@ -21,6 +21,9 @@ site/
 # Runtime artifacts
 published_artifacts/
 
+# EZBattery source staged from the pinned upstream GitHub revision.
+servers/ezbattery/ezbattery_tools/src/ezbattery_tools/_vendor/EZBattery/
+
 # Baked model checkpoints (large binaries staged into the Docker build context;
 # fetched from blob / staged locally, never committed to git).
 model-assets/
