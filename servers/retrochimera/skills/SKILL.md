@@ -64,6 +64,10 @@ route search did not complete within that budget; it is not a partial success.
 
 ## Other notes
 
+- Treat routes as computational planning suggestions, not validated laboratory
+  procedures or safety assessments. Toxicology, chemical reactivity, process
+  hazards, containment, and waste management require separate evaluation
+  before experimental use.
 - Multi-step planning runs RetroStar over the single-step model and falls back
   to single-step predictions if the search yields no non-trivial routes.
 - If the target is already purchasable, `routes` is empty with an explanatory

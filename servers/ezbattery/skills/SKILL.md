@@ -20,6 +20,11 @@ pure-Python cell/system-level RFB physics simulator. Its source is fetched from
 a pinned upstream revision during the image build; there is no external
 checkpoint. Simulation runs on CPU.
 
+Treat simulated KPIs as computational screening results, not experimentally
+validated operating guidance or safety assessments. Toxicology, chemical
+reactivity, process hazards, containment, and waste management require separate
+evaluation before experimental use.
+
 ## Tools
 
 - `simulate_negolyte(standard_potential, solubility_mol_per_L=None,

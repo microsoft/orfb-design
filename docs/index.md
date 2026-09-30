@@ -22,9 +22,12 @@ http://127.0.0.1:8050/mcp
 
 !!! warning "Research software"
 
-    Model predictions and simulated cell metrics are screening evidence, not
-    experimental validation. Confirm promising candidates experimentally
-    before making synthesis, safety, or deployment decisions.
+    Model predictions and simulated cell metrics are computational screening
+    results, not experimental evidence. Retrosynthetic routes are planning
+    suggestions rather than laboratory procedures. ORFB Design does not provide
+    toxicology, chemical-reactivity, process-hazard, containment, or
+    waste-management assessments. Evaluate these considerations separately
+    before experimental use.
 
 ## Servers
 

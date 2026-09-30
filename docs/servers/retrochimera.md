@@ -26,6 +26,11 @@ versions, a SHA-256 identity of the canonicalized loaded inventory, and applicab
 uncertainty classifications. The ordinary result reports whether routes came
 from multi-step planning, a single-step fallback, or an inventory match.
 
+Routes are computational planning suggestions, not validated laboratory
+procedures. They do not constitute toxicology, chemical-reactivity,
+process-hazard, containment, or waste-management assessments. Evaluate those
+considerations separately before experimental use.
+
 ## Skill guidance
 
 The `retrochimera-retrosynthesis` skill describes route interpretation,
