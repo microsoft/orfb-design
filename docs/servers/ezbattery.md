@@ -24,6 +24,11 @@ Returned KPIs include coulombic, voltage, and energy efficiency; charge and
 discharge energy; cycle times; capacity fade; and a downsampled voltage/state-
 of-charge curve.
 
+Simulated KPIs are computational screening results, not experimentally
+validated operating guidance or safety assessments. The simulator does not
+assess toxicology, chemical reactivity, process hazards, containment, or waste
+management. Evaluate those considerations separately before experimental use.
+
 Evaluation results include a compact `provenance` object with the pinned
 EZBattery upstream commit plus applicability and uncertainty classifications.
 Inputs, warnings, parameter provenance, and sensitivity factors remain in the

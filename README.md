@@ -7,8 +7,11 @@ retrosynthesis planning, and cell-level simulation behind a single Agora
 Workbench router.
 
 The project is research software intended for computational screening. Model
-predictions and simulated cell metrics should be validated experimentally
-before they are used to make synthesis, safety, or deployment decisions.
+predictions and simulated cell metrics are not experimental evidence, and
+retrosynthetic routes are planning suggestions rather than laboratory
+procedures. The project does not provide toxicology, chemical-reactivity,
+process-hazard, containment, or waste-management assessments. Evaluate these
+considerations separately before experimental use.
 
 ## Structured tool provenance
 
