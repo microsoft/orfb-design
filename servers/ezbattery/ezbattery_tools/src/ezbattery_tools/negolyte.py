@@ -11,7 +11,10 @@ from __future__ import annotations
 
 from typing import Optional
 
+from orfb_provenance import attach_provenance
+
 from ezbattery_tools import _model
+from ezbattery_tools._provenance import upstream_model_metadata
 
 _DEFAULT_ACTIVE_DENSITY = _model._DEFAULT_ACTIVE_DENSITY
 
@@ -64,9 +67,10 @@ def simulate_negolyte(
         The :func:`ezbattery_tools.cell.simulate_cell` result dict plus a
         ``negolyte`` block, a ``parameter_provenance`` list tagging each override
         ``predicted`` / ``estimated`` / ``literature`` / ``assumed_default`` /
-        ``user``, and any ``warnings`` (e.g. reference-frame sanity checks).
+        ``user``, any ``warnings`` (e.g. reference-frame sanity checks), and a
+        structured ``provenance`` envelope.
     """
-    return _model.simulate_negolyte(
+    result = _model.simulate_negolyte(
         standard_potential=standard_potential,
         solubility_mol_per_L=solubility_mol_per_L,
         electron_number=electron_number,
@@ -78,6 +82,14 @@ def simulate_negolyte(
         reaction_rate_constant=reaction_rate_constant,
         electrolyte_profile=electrolyte_profile,
         extra_overrides=extra_overrides,
+    )
+    return attach_provenance(
+        result,
+        tool_distribution="ezbattery-tools",
+        tool_version_fallback="0.1.0",
+        model=upstream_model_metadata(),
+        applicability="qualified_by_parameter_provenance",
+        uncertainty="not_quantified",
     )
 
 
@@ -114,9 +126,10 @@ def negolyte_sensitivity(
 
     Returns:
         Dict with ``baseline`` KPIs, per-KPI ``ranges`` (min/max/span) and a
-        compact ``grid`` of (diffusivity_factor, rate_constant_factor) -> KPIs.
+        compact ``grid`` of (diffusivity_factor, rate_constant_factor) -> KPIs,
+        plus a structured ``provenance`` envelope.
     """
-    return _model.negolyte_sensitivity(
+    result = _model.negolyte_sensitivity(
         standard_potential=standard_potential,
         solubility_mol_per_L=solubility_mol_per_L,
         electron_number=electron_number,
@@ -130,6 +143,14 @@ def negolyte_sensitivity(
         diffusivity_factors=diffusivity_factors,
         rate_constant_factors=rate_constant_factors,
         extra_overrides=extra_overrides,
+    )
+    return attach_provenance(
+        result,
+        tool_distribution="ezbattery-tools",
+        tool_version_fallback="0.1.0",
+        model=upstream_model_metadata(),
+        applicability="qualified_by_parameter_provenance",
+        uncertainty="sensitivity_analysis_only",
     )
 
 

@@ -38,3 +38,6 @@ its training distribution). Treat warned predictions with extra caution.
 - Unparseable SMILES are reported per-molecule as `status="failed"` rather than
   aborting the batch.
 - Inference runs on CPU and is fast; large lists return quickly.
+- Preserve the top-level `provenance` object; it records installed versions and
+  compact applicability and uncertainty classifications. Per-molecule
+  reliability warnings remain in the ordinary prediction records.

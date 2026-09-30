@@ -18,7 +18,8 @@ test = [
     # simulations once scripts/fetch_ezbattery_source.sh supplies the pinned
     # upstream modules. numpy is pinned <2 to match its conda kernel.
     "numpy<2",
-    "scipy",
+    # EZBattery is not compatible with the NumPy-2-only SciPy releases.
+    "scipy<1.15",
     "pandas",
     "openpyxl",
     "ismember",

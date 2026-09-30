@@ -42,3 +42,6 @@ image and container runtime.
   that fail graph conversion are reported as `status == "failed"`.
 - Prediction is fast; run batches synchronously in a single
   `execute_graphormer_code` call.
+- Preserve the top-level `provenance` object with downstream results. It records
+  the checkpoint identifier and explicitly notes that no checkpoint version,
+  applicability score, or calibrated uncertainty is available.

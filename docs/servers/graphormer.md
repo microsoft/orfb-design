@@ -22,6 +22,11 @@ Both functions accept up to 32 SMILES and return one result per molecule.
 Inputs that fail graph conversion or exceed 128 non-hydrogen atoms are reported
 as failures.
 
+Results include a structured `provenance` object. It identifies the requested
+checkpoint artifact, records when no checkpoint version is available, and
+states that the model provides neither an applicability-domain score nor
+calibrated predictive uncertainty.
+
 ## Skill guidance
 
 The `graphormer-redox` skill explains the potential reference frame, batch

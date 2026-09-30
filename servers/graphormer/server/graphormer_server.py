@@ -40,6 +40,7 @@ from servers.peers import peer_registry_for
 
 _SERVER_PKG_DIR = Path(__file__).resolve().parent.parent
 _GRAPHORMER_TOOLS_PKG = str(_SERVER_PKG_DIR / "graphormer_tools")
+_PROVENANCE_PKG = str(_SERVER_PKG_DIR.parent / "provenance_tools")
 _GRAPHORMER_SOURCE_DIR = os.getenv("GRAPHORMER_SOURCE_DIR", "/app/graphormer-source")
 _ENVIRONMENT_FILE = _SERVER_PKG_DIR / "environment-graphormer.yml"
 _SKILL_PATH = _SERVER_PKG_DIR / "skills" / "SKILL.md"
@@ -112,6 +113,7 @@ config = ServerConfig(
             'pyximport.install(setup_args={"include_dirs": numpy.get_include()}, '
             "inplace=True, language_level=3); import graphormer.data.algos'"
         ),
+        f"python -m pip install --no-deps {_PROVENANCE_PKG}",
         # In-kernel Graphormer tools (build isolation -> modern setuptools for
         # the PEP 621 metadata; the env's pinned setuptools 59.5.0 is too old).
         f"python -m pip install --no-deps {_GRAPHORMER_TOOLS_PKG}",

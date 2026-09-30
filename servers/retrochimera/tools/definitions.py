@@ -31,9 +31,17 @@ predict_retrosynthesis = ToolDefinition(
         ReturnSpec(name="attempts", type=int, description="Number of planning attempts"),
         ReturnSpec(name="routes", type=list, description="Synthesis routes (reactions, num_steps, catalog flag)"),
         ReturnSpec(
+            name="route_source",
+            type=str,
+            description="multi_step, single_step_fallback, or inventory_match",
+        ),
+        ReturnSpec(
             name="all_routes_resolved", type=bool, description="Whether all routes end in purchasable materials"
         ),
         ReturnSpec(name="message", type=str, description="Optional status / diagnostic message"),
+        ReturnSpec(
+            name="provenance", type=dict, description="Compact versions, applicability, and uncertainty metadata"
+        ),
     ],
     state_transition=StateTransition(
         produces=frozenset({"retrochimera.routes_predicted"}),

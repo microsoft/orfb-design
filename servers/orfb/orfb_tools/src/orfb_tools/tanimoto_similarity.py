@@ -8,8 +8,10 @@ are to a desired reference structure.
 
 from __future__ import annotations
 
+from orfb_provenance import attach_provenance
 from rdkit import DataStructs
 from rdkit.Chem import AllChem
+from rdkit.rdBase import rdkitVersion
 
 _UNIT = "dimensionless (0-1, higher is more similar to target)"
 _RADIUS = 2
@@ -26,7 +28,8 @@ def tanimoto_similarity(smiles_list: list[str], target_smiles: str) -> dict:
     Returns:
         Dict with ``target_smiles``, ``unit``, ``num_molecules`` and
         ``results`` — one record per molecule with ``smiles``, ``status``,
-        ``similarity`` (float, 0.0 on failure) and ``failure_reason``.
+        ``similarity`` (float, 0.0 on failure) and ``failure_reason`` — plus a
+        structured ``provenance`` envelope.
     """
     if not isinstance(smiles_list, list) or not smiles_list:
         raise ValueError("smiles_list must be a non-empty list of SMILES strings")
@@ -52,9 +55,18 @@ def tanimoto_similarity(smiles_list: list[str], target_smiles: str) -> dict:
             {"smiles": smiles, "status": "succeeded", "similarity": round(similarity, 4), "failure_reason": None}
         )
 
-    return {
+    result = {
         "target_smiles": target_smiles,
         "unit": _UNIT,
         "num_molecules": len(smiles_list),
         "results": results,
     }
+    return attach_provenance(
+        result,
+        tool_distribution="orfb-tools",
+        tool_version_fallback="0.1.0",
+        model={"name": "RDKit Morgan fingerprint Tanimoto similarity", "version": rdkitVersion},
+        configuration={"fingerprint": "Morgan", "radius": _RADIUS, "num_bits": _N_BITS, "use_chirality": False},
+        applicability="not_calibrated",
+        uncertainty="not_applicable_deterministic",
+    )

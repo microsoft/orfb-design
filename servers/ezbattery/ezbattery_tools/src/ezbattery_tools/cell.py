@@ -7,7 +7,10 @@ from __future__ import annotations
 
 from typing import Optional
 
+from orfb_provenance import attach_provenance
+
 from ezbattery_tools import _model
+from ezbattery_tools._provenance import upstream_model_metadata
 
 
 def simulate_cell(overrides: Optional[dict] = None) -> dict:
@@ -21,6 +24,14 @@ def simulate_cell(overrides: Optional[dict] = None) -> dict:
         Dict with ``cell``, the applied ``overrides`` and a ``kpis`` block
         (per-cycle coulombic / voltage / energy efficiency, charge & discharge
         energy and times, capacity fade, and a downsampled cell-voltage / SOC
-        curve).
+        curve), plus a structured ``provenance`` envelope.
     """
-    return _model.simulate_cell(overrides)
+    result = _model.simulate_cell(overrides)
+    return attach_provenance(
+        result,
+        tool_distribution="ezbattery-tools",
+        tool_version_fallback="0.1.0",
+        model=upstream_model_metadata(),
+        applicability="reference_configuration",
+        uncertainty="not_quantified",
+    )

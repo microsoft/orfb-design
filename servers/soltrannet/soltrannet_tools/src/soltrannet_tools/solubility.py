@@ -7,6 +7,8 @@ mol/L.
 
 from __future__ import annotations
 
+from orfb_provenance import attach_provenance, distribution_version
+
 from soltrannet_tools import _model
 
 
@@ -21,6 +23,17 @@ def predict_solubility(smiles_list: list[str]) -> dict:
         ``num_molecules`` and ``predictions`` — one record per molecule with
         ``smiles``, ``status``, ``log_solubility`` (logS, log10 mol/L),
         ``unit``, ``warning`` (SolTranNet reliability note) and
-        ``failure_reason``.
+        ``failure_reason``, plus a structured ``provenance`` envelope.
     """
-    return _model.predict(smiles_list)
+    result = _model.predict(smiles_list)
+    return attach_provenance(
+        result,
+        tool_distribution="soltrannet-tools",
+        tool_version_fallback="0.1.0",
+        model={
+            "name": "SolTranNet aqueous-solubility model",
+            "version": distribution_version("soltrannet"),
+        },
+        applicability="reported_per_result",
+        uncertainty="not_quantified",
+    )

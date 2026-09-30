@@ -24,6 +24,11 @@ Returned KPIs include coulombic, voltage, and energy efficiency; charge and
 discharge energy; cycle times; capacity fade; and a downsampled voltage/state-
 of-charge curve.
 
+Evaluation results include a compact `provenance` object with the pinned
+EZBattery upstream commit plus applicability and uncertainty classifications.
+Inputs, warnings, parameter provenance, and sensitivity factors remain in the
+MCP call log or ordinary result.
+
 ## Skill guidance
 
 The `ezbattery-cell-simulation` skill focuses on the gap between atomistic

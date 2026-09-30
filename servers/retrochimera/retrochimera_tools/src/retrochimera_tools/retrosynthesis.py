@@ -17,6 +17,8 @@ import os
 import urllib.error
 import urllib.request
 
+from orfb_provenance import attach_provenance, distribution_version
+
 from retrochimera_tools import _model
 
 # Planning can take many minutes on memory-constrained hosts; allow a generous
@@ -51,12 +53,29 @@ def predict_retrosynthesis(smiles: str, num_results: int = 5) -> dict:
     Returns:
         Dict with ``status``, ``attempts``, ``routes`` (each with ``reactions``,
         ``num_steps`` and ``starting_materials_in_catalog``),
-        ``all_routes_resolved`` and ``message``.
+        ``all_routes_resolved``, ``message`` and a structured ``provenance``
+        envelope.
     """
     # Validate client-side so bad input fails fast without a service round-trip.
     _model.validate_inputs(smiles, num_results)
 
     service_url = os.environ.get("RETROCHIMERA_MODEL_SERVICE_URL")
     if service_url:
-        return _predict_via_service(service_url, smiles, num_results)
-    return _model.predict_retrosynthesis(smiles, num_results)
+        result = _predict_via_service(service_url, smiles, num_results)
+    else:
+        result = _model.predict_retrosynthesis(smiles, num_results)
+
+    inventory_sha256 = result.pop("inventory_sha256", None)
+    return attach_provenance(
+        result,
+        tool_distribution="retrochimera-tools",
+        tool_version_fallback="0.1.0",
+        model={
+            "name": "RetroChimera Pistachio retrosynthesis model",
+            "version": distribution_version("retrochimera"),
+            "artifact": "pistachio",
+        },
+        configuration={"inventory_sha256": inventory_sha256} if inventory_sha256 else None,
+        applicability="not_assessed",
+        uncertainty="not_quantified",
+    )

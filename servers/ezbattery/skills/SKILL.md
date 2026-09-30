@@ -150,3 +150,7 @@ is exactly why device-level simulation adds value over the molecular E° alone.
   `voltage_curve`; don't print whole result dicts verbatim.
 - The reference cell is the validated organic DHPS–ferrocyanide config from
   EZBattery's demo; the fixed posolyte is ferro/ferricyanide.
+- Preserve the top-level `provenance` object from every evaluation. It records
+  the pinned EZBattery commit and compact applicability and uncertainty
+  classifications. Inputs, warnings, parameter provenance, and sensitivity
+  factors remain in the MCP call log or ordinary result.

@@ -30,6 +30,7 @@ def test_upstream_source_provenance():
 
 def test_simulate_cell_real():
     result = simulate_cell()
+    expected_commit = (_ROOT / "servers" / "ezbattery" / "EZBattery.COMMIT").read_text().strip()
     assert result["cell"] == "organic_dhps_ferrocyanide"
     assert result["overrides"] == {}
     assert "mode" not in result
@@ -46,6 +47,7 @@ def test_simulate_cell_real():
         assert isinstance(fc[key], float)
     assert 0.0 < fc["coulombic_efficiency"] <= 1.0
     assert 0.0 < fc["energy_efficiency"] <= 1.0
+    assert result["provenance"]["model_version"] == expected_commit
 
 
 def test_simulate_cell_deterministic():
@@ -140,6 +142,7 @@ def test_simulate_negolyte_bridge_provenance():
     assert prov["AnodeReductant1Valence"]["value"] == -4
     # Kinetics untouched -> flagged as an assumption.
     assert prov["AnodeReactionRateConstant"]["source"] == "assumed_default"
+    assert result["provenance"]["applicability"] == "qualified_by_parameter_provenance"
 
 
 def test_simulate_negolyte_reference_frame_warning():

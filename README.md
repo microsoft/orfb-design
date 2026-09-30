@@ -10,6 +10,26 @@ The project is research software intended for computational screening. Model
 predictions and simulated cell metrics should be validated experimentally
 before they are used to make synthesis, safety, or deployment decisions.
 
+## Structured tool provenance
+
+Scientific evaluation tools return an additive top-level `provenance` object so
+user-supplied agents can build an end-to-end audit record. The envelope includes:
+
+- the tool package version;
+- the available model, checkpoint, or simulator version;
+- compact applicability and uncertainty classifications; and
+- material configuration that is not otherwise evident from the tool call or
+  ordinary result.
+
+Inputs, invocation identity, ordering, timestamps, statuses, warnings, and
+failure details remain in the MCP call log or ordinary tool result rather than
+being duplicated in the provenance object. The package cannot ensure that a
+user-supplied agent retains or presents the complete workflow record. Consumers
+should preserve the MCP call log and the compact `provenance` object from every
+tool call. Catalog-only tools, such as `list_electrolyte_profiles`, continue to
+return their documented catalog shape rather than an evaluation provenance
+envelope.
+
 ## Capabilities
 
 | Server | Default port | Main tools | Purpose |

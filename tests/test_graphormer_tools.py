@@ -62,7 +62,10 @@ def test_redox_proxies_to_service(monkeypatch):
 
     result = predict_reduction_potential(["CCO", "c1ccccc1"])
 
-    assert result == expected
+    assert {key: result[key] for key in expected} == expected
+    assert set(result) == set(expected) | {"provenance"}
+    assert result["provenance"]["model_artifact"] == "reduction_checkpoint_best.pt"
+    assert result["provenance"]["applicability"] == "not_assessed"
     assert captured["url"] == "http://127.0.0.1:8902/predict"
     assert captured["body"] == {"smiles_list": ["CCO", "c1ccccc1"], "property_name": "reduction"}
 

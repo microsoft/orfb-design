@@ -17,6 +17,8 @@ import os
 import urllib.error
 import urllib.request
 
+from orfb_provenance import attach_provenance
+
 from graphormer_tools import _model
 
 _SERVICE_TIMEOUT_S = 300.0
@@ -45,8 +47,27 @@ def _predict(smiles_list: list[str], property_name: str) -> dict:
 
     service_url = os.environ.get("GRAPHORMER_MODEL_SERVICE_URL")
     if service_url:
-        return _predict_via_service(service_url, smiles_list, property_name)
-    return _model.predict(smiles_list, property_name)
+        result = _predict_via_service(service_url, smiles_list, property_name)
+    else:
+        result = _model.predict(smiles_list, property_name)
+
+    checkpoint_dir = _model.checkpoint_dir()
+    return attach_provenance(
+        result,
+        tool_distribution="graphormer-tools",
+        tool_version_fallback="0.1.0",
+        model={
+            "name": f"Graphormer {property_name} potential checkpoint",
+            "version": None,
+            "artifact": f"{property_name}_checkpoint_best.pt",
+        },
+        configuration={
+            "reference_electrode": "SHE",
+            "checkpoint_configured": checkpoint_dir is not None,
+        },
+        applicability="not_assessed",
+        uncertainty="not_quantified",
+    )
 
 
 def predict_reduction_potential(smiles_list: list[str]) -> dict:
@@ -58,7 +79,8 @@ def predict_reduction_potential(smiles_list: list[str]) -> dict:
     Returns:
         Dict with ``property_name`` ('reduction'), ``unit``, ``num_molecules``
         and ``predictions`` — one record per molecule with ``smiles``,
-        ``status``, ``potential``, ``unit`` and ``failure_reason``.
+        ``status``, ``potential``, ``unit`` and ``failure_reason`` — plus a
+        structured ``provenance`` envelope.
     """
     return _predict(smiles_list, "reduction")
 
@@ -72,6 +94,7 @@ def predict_oxidation_potential(smiles_list: list[str]) -> dict:
     Returns:
         Dict with ``property_name`` ('oxidation'), ``unit``, ``num_molecules``
         and ``predictions`` — one record per molecule with ``smiles``,
-        ``status``, ``potential``, ``unit`` and ``failure_reason``.
+        ``status``, ``potential``, ``unit`` and ``failure_reason`` — plus a
+        structured ``provenance`` envelope.
     """
     return _predict(smiles_list, "oxidation")

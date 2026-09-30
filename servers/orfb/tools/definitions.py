@@ -42,6 +42,9 @@ molecular_properties = ToolDefinition(
         ReturnSpec(name="properties_computed", type=list, description="Descriptor names computed"),
         ReturnSpec(name="num_molecules", type=int, description="Number of input molecules"),
         ReturnSpec(name="results", type=list, description="Per-molecule descriptor records"),
+        ReturnSpec(
+            name="provenance", type=dict, description="Compact versions, applicability, and uncertainty metadata"
+        ),
     ],
     state_transition=StateTransition(
         produces=frozenset({"orfb.properties_computed"}),
@@ -75,6 +78,9 @@ tanimoto_similarity = ToolDefinition(
         ReturnSpec(name="unit", type=str, description="Similarity unit description"),
         ReturnSpec(name="num_molecules", type=int, description="Number of input molecules"),
         ReturnSpec(name="results", type=list, description="Per-molecule similarity records"),
+        ReturnSpec(
+            name="provenance", type=dict, description="Compact versions, applicability, and uncertainty metadata"
+        ),
     ],
     state_transition=StateTransition(
         requires=frozenset({"orfb.properties_computed"}),
@@ -102,6 +108,9 @@ sa_score = ToolDefinition(
         ReturnSpec(name="unit", type=str, description="SA score unit description"),
         ReturnSpec(name="num_molecules", type=int, description="Number of input molecules"),
         ReturnSpec(name="results", type=list, description="Per-molecule SA score records"),
+        ReturnSpec(
+            name="provenance", type=dict, description="Compact versions, applicability, and uncertainty metadata"
+        ),
     ],
     state_transition=StateTransition(
         requires=frozenset({"orfb.properties_computed"}),
