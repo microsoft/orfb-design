@@ -24,7 +24,9 @@ predict_reduction_potential = ToolDefinition(
         ReturnSpec(name="unit", type=str, description="Potential unit (V versus SHE)"),
         ReturnSpec(name="num_molecules", type=int, description="Number of input molecules"),
         ReturnSpec(name="predictions", type=list, description="Per-molecule reduction potential records"),
-        ReturnSpec(name="provenance", type=dict, description="Structured inputs, versions, status, and limitations"),
+        ReturnSpec(
+            name="provenance", type=dict, description="Compact versions, applicability, and uncertainty metadata"
+        ),
     ],
     state_transition=StateTransition(
         produces=frozenset({"graphormer.reduction_predicted"}),
@@ -52,7 +54,9 @@ predict_oxidation_potential = ToolDefinition(
         ReturnSpec(name="unit", type=str, description="Potential unit (V versus SHE)"),
         ReturnSpec(name="num_molecules", type=int, description="Number of input molecules"),
         ReturnSpec(name="predictions", type=list, description="Per-molecule oxidation potential records"),
-        ReturnSpec(name="provenance", type=dict, description="Structured inputs, versions, status, and limitations"),
+        ReturnSpec(
+            name="provenance", type=dict, description="Compact versions, applicability, and uncertainty metadata"
+        ),
     ],
     state_transition=StateTransition(
         produces=frozenset({"graphormer.oxidation_predicted"}),

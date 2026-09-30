@@ -47,8 +47,7 @@ def test_simulate_cell_real():
         assert isinstance(fc[key], float)
     assert 0.0 < fc["coulombic_efficiency"] <= 1.0
     assert 0.0 < fc["energy_efficiency"] <= 1.0
-    assert result["provenance"]["tool"]["name"] == "simulate_cell"
-    assert result["provenance"]["model"]["version"] == expected_commit
+    assert result["provenance"]["model_version"] == expected_commit
 
 
 def test_simulate_cell_deterministic():
@@ -79,7 +78,6 @@ def test_simulate_negolyte_real():
     # solubility mol/L -> mol/m^3
     assert neg["anode_parameters"]["AnodeOxidant1InitialConcentrationInAnode"] == 1000.0
     assert neg["anode_parameters"]["AnodeElectronNumber"] == 2
-    assert result["provenance"]["input"]["values"]["standard_potential"] == -1.05
 
 
 def test_simulate_negolyte_minimal():
@@ -144,7 +142,7 @@ def test_simulate_negolyte_bridge_provenance():
     assert prov["AnodeReductant1Valence"]["value"] == -4
     # Kinetics untouched -> flagged as an assumption.
     assert prov["AnodeReactionRateConstant"]["source"] == "assumed_default"
-    assert result["provenance"]["applicability"]["status"] == "qualified_by_parameter_provenance"
+    assert result["provenance"]["applicability"] == "qualified_by_parameter_provenance"
 
 
 def test_simulate_negolyte_reference_frame_warning():

@@ -43,6 +43,5 @@ image and container runtime.
 - Prediction is fast; run batches synchronously in a single
   `execute_graphormer_code` call.
 - Preserve the top-level `provenance` object with downstream results. It records
-  the exact inputs and checkpoint identifier and explicitly notes that no
-  checkpoint version, applicability score, or calibrated uncertainty is
-  available.
+  the checkpoint identifier and explicitly notes that no checkpoint version,
+  applicability score, or calibrated uncertainty is available.

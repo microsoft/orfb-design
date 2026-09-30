@@ -62,53 +62,20 @@ def predict_retrosynthesis(smiles: str, num_results: int = 5) -> dict:
     service_url = os.environ.get("RETROCHIMERA_MODEL_SERVICE_URL")
     if service_url:
         result = _predict_via_service(service_url, smiles, num_results)
-        backend = "sidecar"
     else:
         result = _model.predict_retrosynthesis(smiles, num_results)
-        backend = "in_process"
 
     inventory_path = os.environ.get("RETROCHIMERA_INVENTORY_PATH")
-    route_source = result.get("route_source")
-    provenance_warnings = []
-    if route_source == "single_step_fallback":
-        provenance_warnings.append(
-            "Multi-step planning did not produce a route; returned single-step fallback results."
-        )
-    if route_source != "inventory_match" and not result.get("routes"):
-        provenance_warnings.append("No retrosynthetic route was returned.")
     return attach_provenance(
         result,
-        tool_name="predict_retrosynthesis",
         tool_distribution="retrochimera-tools",
         tool_version_fallback="0.1.0",
-        inputs={"smiles": smiles, "num_results": num_results},
         model={
             "name": "RetroChimera Pistachio retrosynthesis model",
             "version": distribution_version("retrochimera"),
             "artifact": "pistachio",
         },
-        configuration={
-            "num_results": num_results,
-            "num_routes_returned": len(result.get("routes", [])),
-            "route_source": route_source,
-            "inference_backend": backend,
-            "inventory_identifier": Path(inventory_path).name if inventory_path else None,
-            "inventory_configured": bool(inventory_path),
-        },
-        assumptions=[
-            "Routes are computational planning suggestions and are not experimentally validated procedures.",
-            "Purchasability annotations depend on the user-supplied inventory.",
-        ],
-        applicability={
-            "status": "not_assessed",
-            "details": (
-                "The planner reports route resolution and catalog annotations, but no calibrated route-success "
-                "probability or chemical applicability-domain score."
-            ),
-        },
-        uncertainty={
-            "quantified": False,
-            "details": "Route rankings do not include calibrated yield, selectivity, safety, or success uncertainty.",
-        },
-        warnings=provenance_warnings,
+        configuration={"inventory_identifier": Path(inventory_path).name} if inventory_path else None,
+        applicability="not_assessed",
+        uncertainty="not_quantified",
     )

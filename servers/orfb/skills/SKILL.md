@@ -77,6 +77,6 @@ their `results` list with `status == "failed"`.
 ## Provenance
 
 Every evaluation tool returns a top-level `provenance` object. Preserve it when
-passing results between agents or peers; it records exact inputs, tool/model
-versions, configuration, normalized status and failures, assumptions,
-applicability guidance, and uncertainty scope.
+passing results between agents or peers; it adds tool/model versions and compact
+applicability and uncertainty classifications without duplicating the MCP call
+log or ordinary result.

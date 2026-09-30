@@ -69,5 +69,6 @@ route search did not complete within that budget; it is not a partial success.
 - If the target is already purchasable, `routes` is empty with an explanatory
   `message`.
 - Preserve the top-level `provenance` object with any route summary. It records
-  the target, requested route count, model/tool versions, inventory
-  configuration, assumptions, applicability limits, and uncertainty scope.
+  model/tool versions, the inventory identifier, and compact applicability and
+  uncertainty classifications. Preserve `route_source` from the ordinary result
+  to distinguish multi-step routes, fallbacks, and inventory matches.

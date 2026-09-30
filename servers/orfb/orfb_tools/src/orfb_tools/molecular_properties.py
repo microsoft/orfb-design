@@ -91,22 +91,9 @@ def molecular_properties(smiles_list: list[str], properties: list | None = None)
     }
     return attach_provenance(
         result,
-        tool_name="molecular_properties",
         tool_distribution="orfb-tools",
         tool_version_fallback="0.1.0",
-        inputs={"smiles_list": smiles_list, "properties": properties},
         model={"name": "RDKit descriptors", "version": rdkitVersion},
-        configuration={"properties_computed": list(requested), "canonical_smiles_isomeric": True},
-        assumptions=[
-            "Descriptors are computed from the supplied SMILES representation.",
-            "No aqueous protonation, tautomer, mixture, or formulation state is inferred.",
-        ],
-        applicability={
-            "status": "assessed_per_molecule",
-            "details": "SMILES that RDKit cannot parse are marked failed; no broader chemical-domain calibration applies.",
-        },
-        uncertainty={
-            "quantified": False,
-            "details": "RDKit descriptors are deterministic calculations; representation and state uncertainty is not quantified.",
-        },
+        applicability="rdkit_parse_required",
+        uncertainty="not_applicable_deterministic",
     )

@@ -77,21 +77,9 @@ def sa_score(smiles_list: list[str]) -> dict:
 
     return attach_provenance(
         {"unit": _UNIT, "num_molecules": len(smiles_list), "results": results},
-        tool_name="sa_score",
         tool_distribution="orfb-tools",
         tool_version_fallback="0.1.0",
-        inputs={"smiles_list": smiles_list},
         model={"name": "RDKit SA_Score", "version": rdkitVersion},
-        configuration={"score_range": [1.0, 10.0], "lower_is_easier": True},
-        assumptions=[
-            "The heuristic score estimates structural synthetic accessibility, not route feasibility, yield, safety, or scale-up.",
-        ],
-        applicability={
-            "status": "assessed_per_molecule",
-            "details": "SMILES that RDKit cannot parse are marked failed; no calibrated applicability-domain score is available.",
-        },
-        uncertainty={
-            "quantified": False,
-            "details": "SA_Score is a deterministic heuristic and does not return calibrated uncertainty.",
-        },
+        applicability="not_calibrated",
+        uncertainty="not_quantified",
     )

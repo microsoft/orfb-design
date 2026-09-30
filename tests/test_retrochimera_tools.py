@@ -85,9 +85,8 @@ def test_retrosynthesis_proxies_to_service(monkeypatch):
 
     assert {key: result[key] for key in expected} == expected
     assert set(result) == set(expected) | {"provenance"}
-    assert result["provenance"]["tool"]["name"] == "predict_retrosynthesis"
-    assert result["provenance"]["configuration"]["inference_backend"] == "sidecar"
-    assert result["provenance"]["input"]["values"] == {"smiles": "CCO", "num_results": 3}
+    assert result["provenance"]["model_artifact"] == "pistachio"
+    assert result["provenance"]["uncertainty"] == "not_quantified"
     assert captured["url"] == "http://127.0.0.1:8901/predict"
     assert captured["body"] == {"smiles": "CCO", "num_results": 3}
 

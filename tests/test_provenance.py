@@ -3,43 +3,42 @@
 from orfb_provenance import attach_provenance
 
 
-def _attach(result, inputs):
+def _attach(result, configuration=None):
     return attach_provenance(
         result,
-        tool_name="example_tool",
         tool_distribution="missing-example-distribution",
         tool_version_fallback="1.2.3",
-        inputs=inputs,
         model={"name": "example", "version": "4.5.6"},
+        configuration=configuration,
+        applicability="not_assessed",
+        uncertainty="not_quantified",
     )
 
 
-def test_input_hash_is_deterministic_and_order_independent():
-    first = _attach({"results": []}, {"b": 2, "a": [1, 3]})
-    second = _attach({"results": []}, {"a": [1, 3], "b": 2})
+def test_compact_provenance_contains_provider_owned_metadata():
+    result = _attach({"results": []})
 
-    assert first["provenance"]["input"]["sha256"] == second["provenance"]["input"]["sha256"]
-    assert first["provenance"]["tool"]["version"] == "1.2.3"
+    assert result["provenance"] == {
+        "schema_version": "1.0",
+        "tool_version": "1.2.3",
+        "model_version": "4.5.6",
+        "applicability": "not_assessed",
+        "uncertainty": "not_quantified",
+    }
 
 
-def test_execution_summary_reports_partial_results():
-    result = _attach(
-        {
-            "results": [
-                {"status": "succeeded", "warning": "review applicability", "failure_reason": None},
-                {"status": "failed", "warning": None, "failure_reason": "invalid input"},
-            ]
-        },
-        {"items": ["valid", "invalid"]},
+def test_optional_metadata_is_only_included_when_present(monkeypatch):
+    monkeypatch.setenv("ORFB_BUILD_COMMIT", "abc123")
+    result = attach_provenance(
+        {},
+        tool_distribution="missing-example-distribution",
+        tool_version_fallback="1.2.3",
+        model={"version": None, "artifact": "checkpoint.pt"},
+        configuration={"reference": "SHE"},
+        applicability="not_assessed",
+        uncertainty="not_quantified",
     )
 
-    execution = result["provenance"]["execution"]
-    assert execution["status"] == "partial"
-    assert execution["warnings"] == ["review applicability"]
-    assert execution["failure_reasons"] == ["invalid input"]
-    assert execution["record_counts"] == {"total": 2, "succeeded": 1, "failed": 1, "warned": 1}
-    assert execution["record_warnings"] == [
-        {"index": 0, "input": None, "message": "review applicability"},
-    ]
-    assert execution["invocation_id"]
-    assert execution["envelope_created_at_utc"].endswith("+00:00")
+    assert result["provenance"]["model_artifact"] == "checkpoint.pt"
+    assert result["provenance"]["configuration"] == {"reference": "SHE"}
+    assert result["provenance"]["build_commit"] == "abc123"

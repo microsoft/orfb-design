@@ -23,9 +23,9 @@ Characterize molecules before calling the similarity or synthetic-accessibility
 functions. Invalid SMILES are returned as per-molecule failures rather than
 aborting the complete batch.
 
-Each evaluation result includes a structured `provenance` object with the exact
-inputs, RDKit and tool versions, configuration, normalized status and failures,
-assumptions, applicability information, and uncertainty scope.
+Each evaluation result includes a compact `provenance` object with the RDKit and
+tool versions plus applicability and uncertainty classifications. Inputs,
+statuses, and failures remain in the MCP call log and ordinary result.
 
 ## Skill guidance
 

@@ -15,20 +15,20 @@ before they are used to make synthesis, safety, or deployment decisions.
 Scientific evaluation tools return an additive top-level `provenance` object so
 user-supplied agents can build an end-to-end audit record. The envelope includes:
 
-- the tool package and version;
-- exact inputs plus a deterministic SHA-256 input identifier;
-- model or simulator identity and available version information;
-- relevant configuration, assumptions, and applicability information;
-- normalized execution status, warnings, and failure reasons; and
-- whether uncertainty is quantified and what it covers.
+- the tool package version;
+- the available model, checkpoint, or simulator version;
+- compact applicability and uncertainty classifications; and
+- material configuration that is not otherwise evident from the tool call or
+  ordinary result.
 
-The package provides invocation-level metadata but cannot ensure that a
+Inputs, invocation identity, ordering, timestamps, statuses, warnings, and
+failure details remain in the MCP call log or ordinary tool result rather than
+being duplicated in the provenance object. The package cannot ensure that a
 user-supplied agent retains or presents the complete workflow record. Consumers
-should preserve the `provenance` object from every tool call. Catalog-only tools,
-such as `list_electrolyte_profiles`, continue to return their documented catalog
-shape rather than an evaluation provenance envelope. Calls rejected before an
-evaluation begins raise an error rather than returning an envelope; consuming
-agents should retain those tool errors in their workflow record.
+should preserve the MCP call log and the compact `provenance` object from every
+tool call. Catalog-only tools, such as `list_electrolyte_profiles`, continue to
+return their documented catalog shape rather than an evaluation provenance
+envelope.
 
 ## Capabilities
 

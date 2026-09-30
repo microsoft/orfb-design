@@ -64,22 +64,10 @@ def tanimoto_similarity(smiles_list: list[str], target_smiles: str) -> dict:
     }
     return attach_provenance(
         result,
-        tool_name="tanimoto_similarity",
         tool_distribution="orfb-tools",
         tool_version_fallback="0.1.0",
-        inputs={"smiles_list": smiles_list, "target_smiles": target_smiles},
         model={"name": "RDKit Morgan fingerprint Tanimoto similarity", "version": rdkitVersion},
         configuration={"fingerprint": "Morgan", "radius": _RADIUS, "num_bits": _N_BITS, "use_chirality": False},
-        assumptions=[
-            "Fingerprint similarity is a structural proxy and does not establish similar electrochemical behavior.",
-            "Stereochemistry is not included in the fingerprint.",
-        ],
-        applicability={
-            "status": "assessed_per_molecule",
-            "details": "SMILES that RDKit cannot parse are marked failed; no calibrated similarity threshold is supplied.",
-        },
-        uncertainty={
-            "quantified": False,
-            "details": "Tanimoto similarity is deterministic for the configured fingerprint and has no predictive uncertainty.",
-        },
+        applicability="not_calibrated",
+        uncertainty="not_applicable_deterministic",
     )

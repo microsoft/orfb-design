@@ -47,47 +47,25 @@ def _predict(smiles_list: list[str], property_name: str) -> dict:
     service_url = os.environ.get("GRAPHORMER_MODEL_SERVICE_URL")
     if service_url:
         result = _predict_via_service(service_url, smiles_list, property_name)
-        backend = "sidecar"
     else:
         result = _model.predict(smiles_list, property_name)
-        backend = "in_process"
 
     checkpoint_dir = _model.checkpoint_dir()
     return attach_provenance(
         result,
-        tool_name=f"predict_{property_name}_potential",
         tool_distribution="graphormer-tools",
         tool_version_fallback="0.1.0",
-        inputs={"smiles_list": smiles_list},
         model={
             "name": f"Graphormer {property_name} potential checkpoint",
             "version": None,
             "artifact": f"{property_name}_checkpoint_best.pt",
-            "version_status": "The externally supplied checkpoint has no repository-declared model version.",
         },
         configuration={
-            "property_name": property_name,
             "reference_electrode": "SHE",
-            "max_batch_size": _model.MAX_BATCH_SIZE,
-            "max_non_hydrogen_atoms": _model.MAX_ATOMS,
-            "inference_backend": backend,
             "checkpoint_configured": checkpoint_dir is not None,
         },
-        assumptions=[
-            "Predictions use the supplied checkpoint as-is and are reported versus SHE.",
-            "The repository does not provide a calibrated applicability domain for this checkpoint.",
-        ],
-        applicability={
-            "status": "not_assessed",
-            "details": (
-                "Parsing and atom-count failures are reported per molecule, but successful predictions have no "
-                "out-of-distribution or reliability score."
-            ),
-        },
-        uncertainty={
-            "quantified": False,
-            "details": "The checkpoint returns point predictions without calibrated predictive uncertainty.",
-        },
+        applicability="not_assessed",
+        uncertainty="not_quantified",
     )
 
 

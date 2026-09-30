@@ -49,6 +49,6 @@ def test_solubility_adds_structured_provenance(monkeypatch):
     result = predict_solubility(["CCO"])
 
     provenance = result["provenance"]
-    assert provenance["tool"]["name"] == "predict_solubility"
-    assert provenance["input"]["values"] == {"smiles_list": ["CCO"]}
-    assert provenance["execution"]["warnings"] == ["example applicability warning"]
+    assert provenance["applicability"] == "reported_per_result"
+    assert provenance["uncertainty"] == "not_quantified"
+    assert result["predictions"][0]["warning"] == "example applicability warning"

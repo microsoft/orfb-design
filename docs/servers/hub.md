@@ -55,9 +55,9 @@ An agent should discover and load the relevant domain skill before writing
 substantial execution code.
 
 Each scientific evaluation result includes a top-level `provenance` object.
-Agents using the hub should preserve the object from every domain-tool call so
-the user can reconstruct inputs, versions, configuration, warnings, failures,
-assumptions, applicability guidance, and uncertainty scope across the workflow.
+Agents using the hub should preserve it together with the MCP call log. The log
+records inputs and invocation details; the compact object adds tool/model
+versions and scientific applicability and uncertainty classifications.
 
 ## Open-source foundation
 
