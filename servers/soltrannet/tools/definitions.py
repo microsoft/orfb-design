@@ -24,6 +24,7 @@ predict_solubility = ToolDefinition(
         ReturnSpec(name="unit", type=str, description="logS (log10 of aqueous solubility S in mol/L)"),
         ReturnSpec(name="num_molecules", type=int, description="Number of input molecules"),
         ReturnSpec(name="predictions", type=list, description="Per-molecule aqueous solubility (logS) records"),
+        ReturnSpec(name="provenance", type=dict, description="Structured inputs, versions, status, and limitations"),
     ],
     state_transition=StateTransition(
         produces=frozenset({"soltrannet.solubility_predicted"}),

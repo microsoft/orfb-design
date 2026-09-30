@@ -12,6 +12,8 @@ from __future__ import annotations
 from typing import Optional
 
 from ezbattery_tools import _model
+from ezbattery_tools._provenance import upstream_model_metadata
+from orfb_provenance import attach_provenance
 
 _DEFAULT_ACTIVE_DENSITY = _model._DEFAULT_ACTIVE_DENSITY
 
@@ -64,9 +66,10 @@ def simulate_negolyte(
         The :func:`ezbattery_tools.cell.simulate_cell` result dict plus a
         ``negolyte`` block, a ``parameter_provenance`` list tagging each override
         ``predicted`` / ``estimated`` / ``literature`` / ``assumed_default`` /
-        ``user``, and any ``warnings`` (e.g. reference-frame sanity checks).
+        ``user``, any ``warnings`` (e.g. reference-frame sanity checks), and a
+        structured ``provenance`` envelope.
     """
-    return _model.simulate_negolyte(
+    result = _model.simulate_negolyte(
         standard_potential=standard_potential,
         solubility_mol_per_L=solubility_mol_per_L,
         electron_number=electron_number,
@@ -78,6 +81,47 @@ def simulate_negolyte(
         reaction_rate_constant=reaction_rate_constant,
         electrolyte_profile=electrolyte_profile,
         extra_overrides=extra_overrides,
+    )
+    return attach_provenance(
+        result,
+        tool_name="simulate_negolyte",
+        tool_distribution="ezbattery-tools",
+        tool_version_fallback="0.1.0",
+        inputs={
+            "standard_potential": standard_potential,
+            "solubility_mol_per_L": solubility_mol_per_L,
+            "electron_number": electron_number,
+            "name": name,
+            "smiles": smiles,
+            "molar_mass": molar_mass,
+            "formal_charge": formal_charge,
+            "active_density_kg_per_m3": active_density_kg_per_m3,
+            "reaction_rate_constant": reaction_rate_constant,
+            "electrolyte_profile": electrolyte_profile,
+            "extra_overrides": extra_overrides,
+        },
+        model=upstream_model_metadata(),
+        configuration={
+            "reference_cell": "organic_dhps_ferrocyanide",
+            "electrolyte_profile": electrolyte_profile or "dhps_koh",
+            "applied_overrides": result.get("overrides", {}),
+        },
+        assumptions=[
+            "Only the anode-side active species is remapped onto the bundled DHPS-ferrocyanide reference cell.",
+            "Parameters tagged assumed_default retain reference-cell values rather than candidate-specific predictions.",
+            "Simulation results are computational screening estimates and require experimental validation.",
+        ],
+        applicability={
+            "status": "qualified_by_parameter_provenance",
+            "details": (
+                "Review parameter_provenance and warnings; electrolyte profiles marked uncalibrated are representative "
+                "stress tests rather than validated formulations."
+            ),
+        },
+        uncertainty={
+            "quantified": False,
+            "details": "This point simulation does not propagate upstream model or parameter uncertainty.",
+        },
     )
 
 
@@ -114,9 +158,10 @@ def negolyte_sensitivity(
 
     Returns:
         Dict with ``baseline`` KPIs, per-KPI ``ranges`` (min/max/span) and a
-        compact ``grid`` of (diffusivity_factor, rate_constant_factor) -> KPIs.
+        compact ``grid`` of (diffusivity_factor, rate_constant_factor) -> KPIs,
+        plus a structured ``provenance`` envelope.
     """
-    return _model.negolyte_sensitivity(
+    result = _model.negolyte_sensitivity(
         standard_potential=standard_potential,
         solubility_mol_per_L=solubility_mol_per_L,
         electron_number=electron_number,
@@ -130,6 +175,53 @@ def negolyte_sensitivity(
         diffusivity_factors=diffusivity_factors,
         rate_constant_factors=rate_constant_factors,
         extra_overrides=extra_overrides,
+    )
+    return attach_provenance(
+        result,
+        tool_name="negolyte_sensitivity",
+        tool_distribution="ezbattery-tools",
+        tool_version_fallback="0.1.0",
+        inputs={
+            "standard_potential": standard_potential,
+            "solubility_mol_per_L": solubility_mol_per_L,
+            "electron_number": electron_number,
+            "name": name,
+            "smiles": smiles,
+            "molar_mass": molar_mass,
+            "formal_charge": formal_charge,
+            "active_density_kg_per_m3": active_density_kg_per_m3,
+            "reaction_rate_constant": reaction_rate_constant,
+            "electrolyte_profile": electrolyte_profile,
+            "diffusivity_factors": diffusivity_factors,
+            "rate_constant_factors": rate_constant_factors,
+            "extra_overrides": extra_overrides,
+        },
+        model=upstream_model_metadata(),
+        configuration={
+            "reference_cell": "organic_dhps_ferrocyanide",
+            "electrolyte_profile": electrolyte_profile or "dhps_koh",
+            "diffusivity_factors": diffusivity_factors,
+            "rate_constant_factors": rate_constant_factors,
+        },
+        assumptions=[
+            "The sweep varies diffusivity and reaction-rate constant but does not propagate uncertainty from upstream models.",
+            "Only the anode-side active species is remapped onto the bundled reference cell.",
+        ],
+        applicability={
+            "status": "qualified_by_parameter_provenance",
+            "details": "Review the baseline parameter provenance, warnings, and profile calibration status.",
+        },
+        uncertainty={
+            "quantified": False,
+            "details": (
+                "Returned KPI ranges quantify only the configured diffusivity and reaction-rate sensitivity grid, "
+                "not total predictive uncertainty."
+            ),
+            "sensitivity_analysis": {
+                "parameters": ["diffusivity", "reaction_rate_constant"],
+                "coverage": "configured_factor_grid_only",
+            },
+        },
     )
 
 

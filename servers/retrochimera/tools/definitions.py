@@ -34,6 +34,7 @@ predict_retrosynthesis = ToolDefinition(
             name="all_routes_resolved", type=bool, description="Whether all routes end in purchasable materials"
         ),
         ReturnSpec(name="message", type=str, description="Optional status / diagnostic message"),
+        ReturnSpec(name="provenance", type=dict, description="Structured inputs, versions, status, and limitations"),
     ],
     state_transition=StateTransition(
         produces=frozenset({"retrochimera.routes_predicted"}),

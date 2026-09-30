@@ -14,6 +14,7 @@ from pathlib import Path
 
 _ROOT = Path(__file__).resolve().parent.parent
 _TOOL_SRC_DIRS = [
+    _ROOT / "servers" / "provenance_tools" / "src",
     _ROOT / "servers" / "orfb" / "orfb_tools" / "src",
     _ROOT / "servers" / "graphormer" / "graphormer_tools" / "src",
     _ROOT / "servers" / "retrochimera" / "retrochimera_tools" / "src",

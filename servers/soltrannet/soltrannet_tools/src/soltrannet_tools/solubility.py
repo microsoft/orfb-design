@@ -8,6 +8,7 @@ mol/L.
 from __future__ import annotations
 
 from soltrannet_tools import _model
+from orfb_provenance import attach_provenance, distribution_version
 
 
 def predict_solubility(smiles_list: list[str]) -> dict:
@@ -21,6 +22,31 @@ def predict_solubility(smiles_list: list[str]) -> dict:
         ``num_molecules`` and ``predictions`` — one record per molecule with
         ``smiles``, ``status``, ``log_solubility`` (logS, log10 mol/L),
         ``unit``, ``warning`` (SolTranNet reliability note) and
-        ``failure_reason``.
+        ``failure_reason``, plus a structured ``provenance`` envelope.
     """
-    return _model.predict(smiles_list)
+    result = _model.predict(smiles_list)
+    return attach_provenance(
+        result,
+        tool_name="predict_solubility",
+        tool_distribution="soltrannet-tools",
+        tool_version_fallback="0.1.0",
+        inputs={"smiles_list": smiles_list},
+        model={
+            "name": "SolTranNet aqueous-solubility model",
+            "version": distribution_version("soltrannet"),
+            "weights": "bundled with the installed SolTranNet distribution",
+        },
+        configuration={"max_batch_size": _model.MAX_BATCH_SIZE, "output": "logS (log10 mol/L)"},
+        assumptions=[
+            "Predictions represent aqueous solubility for the supplied SMILES representation.",
+            "No pH-specific protonation, tautomer, salt formulation, or temperature adjustment is performed.",
+        ],
+        applicability={
+            "status": "reported_per_molecule",
+            "details": "SolTranNet warnings for salts or out-of-domain atom types are preserved in execution.warnings.",
+        },
+        uncertainty={
+            "quantified": False,
+            "details": "SolTranNet returns point predictions and qualitative reliability warnings, not calibrated intervals.",
+        },
+    )

@@ -23,6 +23,10 @@ Characterize molecules before calling the similarity or synthetic-accessibility
 functions. Invalid SMILES are returned as per-molecule failures rather than
 aborting the complete batch.
 
+Each evaluation result includes a structured `provenance` object with the exact
+inputs, RDKit and tool versions, configuration, normalized status and failures,
+assumptions, applicability information, and uncertainty scope.
+
 ## Skill guidance
 
 The `orfb-design` skill teaches an agent to:

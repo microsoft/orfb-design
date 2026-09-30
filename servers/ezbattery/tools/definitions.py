@@ -114,6 +114,7 @@ simulate_negolyte = ToolDefinition(
             description="Per-override records: predicted / estimated / assumed_default / user",
         ),
         ReturnSpec(name="warnings", type=list, description="Reference-frame and other sanity warnings"),
+        ReturnSpec(name="provenance", type=dict, description="Structured inputs, versions, status, and limitations"),
     ],
     state_transition=StateTransition(
         produces=frozenset({"ezbattery.negolyte_evaluated", "ezbattery.cell_simulated"}),
@@ -198,6 +199,7 @@ negolyte_sensitivity = ToolDefinition(
         ReturnSpec(name="ranges", type=dict, description="Per-KPI min / max / span over the sweep grid"),
         ReturnSpec(name="grid", type=list, description="(diffusivity_factor, rate_constant_factor) -> headline KPIs"),
         ReturnSpec(name="warnings", type=list, description="Reference-frame and other sanity warnings"),
+        ReturnSpec(name="provenance", type=dict, description="Structured inputs, versions, status, and limitations"),
     ],
     state_transition=StateTransition(
         produces=frozenset({"ezbattery.negolyte_sensitivity_analyzed", "ezbattery.negolyte_evaluated"}),
@@ -233,6 +235,7 @@ simulate_cell = ToolDefinition(
         ReturnSpec(
             name="kpis", type=dict, description="Per-cycle efficiencies, energies, times, fade and voltage curve"
         ),
+        ReturnSpec(name="provenance", type=dict, description="Structured inputs, versions, status, and limitations"),
     ],
     state_transition=StateTransition(
         produces=frozenset({"ezbattery.cell_simulated"}),

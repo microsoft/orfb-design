@@ -24,6 +24,11 @@ Returned KPIs include coulombic, voltage, and energy efficiency; charge and
 discharge energy; cycle times; capacity fade; and a downsampled voltage/state-
 of-charge curve.
 
+Evaluation results include a structured `provenance` object with exact inputs,
+the pinned EZBattery upstream commit, applied configuration, normalized
+warnings, modeling assumptions, applicability guidance, and the scope of any
+sensitivity-based uncertainty.
+
 ## Skill guidance
 
 The `ezbattery-cell-simulation` skill focuses on the gap between atomistic

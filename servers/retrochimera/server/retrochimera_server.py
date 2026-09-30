@@ -39,6 +39,7 @@ from servers.retrochimera.states import STATE_AFFORDANCES, RetrochimeraState
 from servers.retrochimera.tools import RETROCHIMERA_TOOLS
 
 _RETRO_TOOLS_PKG = str(Path(__file__).resolve().parent.parent / "retrochimera_tools")
+_PROVENANCE_PKG = str(Path(__file__).resolve().parents[2] / "provenance_tools")
 _ENVIRONMENT_FILE = Path(__file__).resolve().parent.parent / "environment.yml"
 _SKILL_PATH = Path(__file__).resolve().parent.parent / "skills" / "SKILL.md"
 
@@ -103,6 +104,7 @@ config = ServerConfig(
         # ``rdkit`` is pulled in transitively. CPU torch wheels run fine without
         # a GPU (submodels just run sequentially).
         ("python -m pip install retrochimera==1.3.0 syntheseus pytorch_lightning torch_geometric pandas"),
+        f"python -m pip install --no-deps {_PROVENANCE_PKG}",
         # In-kernel RetroChimera tools (declares no runtime deps).
         f"python -m pip install --no-deps {_RETRO_TOOLS_PKG}",
     ],

@@ -11,6 +11,9 @@ from __future__ import annotations
 
 from rdkit import Chem
 from rdkit.Chem import Descriptors, rdMolDescriptors
+from rdkit.rdBase import rdkitVersion
+
+from orfb_provenance import attach_provenance
 
 # Descriptor name -> callable computing it from an RDKit Mol.
 _CALCULATORS = {
@@ -46,7 +49,7 @@ def molecular_properties(smiles_list: list[str], properties: list | None = None)
         Dict with ``properties_computed`` (the descriptor names used),
         ``num_molecules`` and ``results`` — one record per molecule with
         ``smiles``, ``canonical_smiles``, ``status``, ``properties`` (name->value
-        map) and ``failure_reason``.
+        map) and ``failure_reason``, plus a structured ``provenance`` envelope.
     """
     if not isinstance(smiles_list, list) or not smiles_list:
         raise ValueError("smiles_list must be a non-empty list of SMILES strings")
@@ -81,8 +84,29 @@ def molecular_properties(smiles_list: list[str], properties: list | None = None)
             }
         )
 
-    return {
+    result = {
         "properties_computed": list(requested),
         "num_molecules": len(smiles_list),
         "results": results,
     }
+    return attach_provenance(
+        result,
+        tool_name="molecular_properties",
+        tool_distribution="orfb-tools",
+        tool_version_fallback="0.1.0",
+        inputs={"smiles_list": smiles_list, "properties": properties},
+        model={"name": "RDKit descriptors", "version": rdkitVersion},
+        configuration={"properties_computed": list(requested), "canonical_smiles_isomeric": True},
+        assumptions=[
+            "Descriptors are computed from the supplied SMILES representation.",
+            "No aqueous protonation, tautomer, mixture, or formulation state is inferred.",
+        ],
+        applicability={
+            "status": "assessed_per_molecule",
+            "details": "SMILES that RDKit cannot parse are marked failed; no broader chemical-domain calibration applies.",
+        },
+        uncertainty={
+            "quantified": False,
+            "details": "RDKit descriptors are deterministic calculations; representation and state uncertainty is not quantified.",
+        },
+    )

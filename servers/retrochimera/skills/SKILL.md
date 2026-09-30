@@ -68,3 +68,6 @@ route search did not complete within that budget; it is not a partial success.
   to single-step predictions if the search yields no non-trivial routes.
 - If the target is already purchasable, `routes` is empty with an explanatory
   `message`.
+- Preserve the top-level `provenance` object with any route summary. It records
+  the target, requested route count, model/tool versions, inventory
+  configuration, assumptions, applicability limits, and uncertainty scope.

@@ -43,6 +43,7 @@ from servers.peers import peer_registry_for
 # Path to the orfb_tools package (relative to this file so it works both inside
 # Docker and when running locally from the repo root).
 _ORFB_TOOLS_PKG = str(Path(__file__).resolve().parent.parent / "orfb_tools")
+_PROVENANCE_PKG = str(Path(__file__).resolve().parents[2] / "provenance_tools")
 _SKILL_PATH = Path(__file__).resolve().parent.parent / "skills" / "SKILL.md"
 
 # ---------------------------------------------------------------------------
@@ -105,6 +106,7 @@ config = ServerConfig(
     dependency_file=ENVIRONMENT_YML,
     auto_build=True,
     additional_commands=[
+        f"python -m pip install --no-deps {_PROVENANCE_PKG}",
         # Install the orfb_tools package into the conda environment so that tool
         # proxy imports (e.g. ``from orfb_tools.sa_score import sa_score``)
         # resolve correctly inside the kernel.

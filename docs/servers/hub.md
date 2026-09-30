@@ -54,6 +54,11 @@ domain skills discoverable through the unified endpoint:
 An agent should discover and load the relevant domain skill before writing
 substantial execution code.
 
+Each scientific evaluation result includes a top-level `provenance` object.
+Agents using the hub should preserve the object from every domain-tool call so
+the user can reconstruct inputs, versions, configuration, warnings, failures,
+assumptions, applicability guidance, and uncertainty scope across the workflow.
+
 ## Open-source foundation
 
 The router and domain execution framework come from

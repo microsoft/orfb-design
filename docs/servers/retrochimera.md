@@ -21,6 +21,10 @@ Planning uses the RetroChimera single-step model with RetroStar multi-step
 search. If multi-step extraction fails to produce a route, the implementation
 falls back to single-step predictions.
 
+Results include a structured `provenance` object with the target and route-count
+inputs, installed tool/model versions, inventory configuration, execution
+status, assumptions, applicability limits, and uncertainty scope.
+
 ## Skill guidance
 
 The `retrochimera-retrosynthesis` skill describes route interpretation,

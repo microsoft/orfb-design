@@ -11,6 +11,9 @@ import os
 import sys
 
 from rdkit.Chem import AllChem
+from rdkit.rdBase import rdkitVersion
+
+from orfb_provenance import attach_provenance
 
 _UNIT = "dimensionless (lower is easier to synthesize, typical range 1-10)"
 
@@ -46,7 +49,8 @@ def sa_score(smiles_list: list[str]) -> dict:
     Returns:
         Dict with ``unit``, ``num_molecules`` and ``results`` — one record per
         molecule with ``smiles``, ``status`` ("succeeded"/"failed"),
-        ``sa_score`` (float, or 10.0 on failure) and ``failure_reason``.
+        ``sa_score`` (float, or 10.0 on failure) and ``failure_reason``, plus a
+        structured ``provenance`` envelope.
     """
     if not isinstance(smiles_list, list) or not smiles_list:
         raise ValueError("smiles_list must be a non-empty list of SMILES strings")
@@ -71,4 +75,23 @@ def sa_score(smiles_list: list[str]) -> dict:
                 {"smiles": smiles, "status": "failed", "sa_score": 10.0, "failure_reason": f"SA score error: {exc}"}
             )
 
-    return {"unit": _UNIT, "num_molecules": len(smiles_list), "results": results}
+    return attach_provenance(
+        {"unit": _UNIT, "num_molecules": len(smiles_list), "results": results},
+        tool_name="sa_score",
+        tool_distribution="orfb-tools",
+        tool_version_fallback="0.1.0",
+        inputs={"smiles_list": smiles_list},
+        model={"name": "RDKit SA_Score", "version": rdkitVersion},
+        configuration={"score_range": [1.0, 10.0], "lower_is_easier": True},
+        assumptions=[
+            "The heuristic score estimates structural synthetic accessibility, not route feasibility, yield, safety, or scale-up.",
+        ],
+        applicability={
+            "status": "assessed_per_molecule",
+            "details": "SMILES that RDKit cannot parse are marked failed; no calibrated applicability-domain score is available.",
+        },
+        uncertainty={
+            "quantified": False,
+            "details": "SA_Score is a deterministic heuristic and does not return calibrated uncertainty.",
+        },
+    )

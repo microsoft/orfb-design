@@ -30,6 +30,7 @@ from servers.soltrannet.states import STATE_AFFORDANCES, SoltrannetState
 from servers.soltrannet.tools import SOLTRANNET_TOOLS
 
 _SOLTRANNET_TOOLS_PKG = str(Path(__file__).resolve().parent.parent / "soltrannet_tools")
+_PROVENANCE_PKG = str(Path(__file__).resolve().parents[2] / "provenance_tools")
 _ENVIRONMENT_FILE = Path(__file__).resolve().parent.parent / "environment.yml"
 _SKILL_PATH = Path(__file__).resolve().parent.parent / "skills" / "SKILL.md"
 
@@ -76,6 +77,7 @@ config = ServerConfig(
         # PyPI ``pathlib`` backport (which shadows and breaks the stdlib module on
         # modern Python); torch is installed above and rdkit/numpy come from conda.
         "python -m pip install --no-deps soltrannet",
+        f"python -m pip install --no-deps {_PROVENANCE_PKG}",
         # In-kernel SolTranNet tools (declares no runtime deps).
         f"python -m pip install --no-deps {_SOLTRANNET_TOOLS_PKG}",
     ],

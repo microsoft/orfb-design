@@ -7,6 +7,7 @@ before any model is touched.
 """
 
 import pytest
+from soltrannet_tools import solubility as solubility_module
 from soltrannet_tools.solubility import predict_solubility
 
 
@@ -23,3 +24,31 @@ def test_solubility_empty_input():
 def test_solubility_non_string_entry():
     with pytest.raises(ValueError):
         predict_solubility(["CCO", ""])
+
+
+def test_solubility_adds_structured_provenance(monkeypatch):
+    monkeypatch.setattr(
+        solubility_module._model,
+        "predict",
+        lambda smiles_list: {
+            "property_name": "aqueous_solubility",
+            "unit": "logS",
+            "num_molecules": 1,
+            "predictions": [
+                {
+                    "smiles": "CCO",
+                    "status": "succeeded",
+                    "log_solubility": -0.2,
+                    "warning": "example applicability warning",
+                    "failure_reason": None,
+                }
+            ],
+        },
+    )
+
+    result = predict_solubility(["CCO"])
+
+    provenance = result["provenance"]
+    assert provenance["tool"]["name"] == "predict_solubility"
+    assert provenance["input"]["values"] == {"smiles_list": ["CCO"]}
+    assert provenance["execution"]["warnings"] == ["example applicability warning"]

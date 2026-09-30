@@ -297,6 +297,7 @@ def _run_real_retrosynthesis(smiles: str, num_results: int) -> dict:
             "status": 200,
             "attempts": 1,
             "routes": [],
+            "route_source": "inventory_match",
             "all_routes_resolved": None,
             "message": "Target molecule found as purchasable in inventory",
         }
@@ -310,6 +311,7 @@ def _run_real_retrosynthesis(smiles: str, num_results: int) -> dict:
     )
 
     routes: list[dict] = []
+    route_source = "multi_step"
     try:
         graph, _output = search.run_from_mol(target_mol)
         try:
@@ -323,8 +325,10 @@ def _run_real_retrosynthesis(smiles: str, num_results: int) -> dict:
             routes = []
         if not routes:
             routes = _single_step_fallback(smiles, num_results, model)
+            route_source = "single_step_fallback"
     except Exception:  # noqa: BLE001 - search failure falls back to the single-step model
         routes = _single_step_fallback(smiles, num_results, model)
+        route_source = "single_step_fallback"
 
     routes = _annotate_routes_with_purchasability(routes, inventory)
     all_resolved = all(r["starting_materials_in_catalog"] for r in routes) if routes else None
@@ -332,6 +336,7 @@ def _run_real_retrosynthesis(smiles: str, num_results: int) -> dict:
         "status": 200,
         "attempts": 1,
         "routes": routes,
+        "route_source": route_source,
         "all_routes_resolved": all_resolved,
         "message": message,
     }

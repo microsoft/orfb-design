@@ -21,6 +21,10 @@ Results include the predicted `log_solubility`, status, and an optional
 reliability warning. A value of `0` corresponds to 1 mol/L, `-2` to 0.01 mol/L,
 and more negative values to lower predicted solubility.
 
+The structured `provenance` object preserves those reliability warnings and
+records exact inputs, installed model and tool versions, configuration,
+assumptions, applicability guidance, and uncertainty scope.
+
 ## Skill guidance
 
 The `soltrannet-solubility` skill explains logS interpretation and tells agents

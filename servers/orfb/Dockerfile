@@ -12,6 +12,7 @@ FROM ${BASE_IMAGE}
 # Copy the ORFB server package tree (includes the orfb_tools kernel package) and
 # the shared peer topology.
 COPY --chown=appuser:appuser servers/orfb /app/servers/orfb
+COPY --chown=appuser:appuser servers/provenance_tools /app/servers/provenance_tools
 COPY --chown=appuser:appuser servers/peers.py /app/servers/peers.py
 COPY --chown=appuser:appuser servers/__init__.py /app/servers/__init__.py
 

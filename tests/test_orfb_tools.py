@@ -19,11 +19,15 @@ def test_molecular_properties_basic():
     assert ethanol["status"] == "succeeded"
     assert ethanol["properties"]["molecular_formula"] == "C2H6O"
     assert ethanol["properties"]["molecular_weight"] == pytest.approx(46.07, abs=0.1)
+    assert result["provenance"]["tool"]["name"] == "molecular_properties"
+    assert result["provenance"]["execution"]["status"] == "succeeded"
 
 
 def test_molecular_properties_invalid_smiles():
     result = molecular_properties(["not_a_smiles"])
     assert result["results"][0]["status"] == "failed"
+    assert result["provenance"]["execution"]["status"] == "failed"
+    assert result["provenance"]["execution"]["failure_reasons"]
 
 
 def test_molecular_properties_subset():
@@ -39,6 +43,7 @@ def test_molecular_properties_unknown_property():
 def test_tanimoto_similarity_self_is_one():
     result = tanimoto_similarity(["CCO"], target_smiles="CCO")
     assert result["results"][0]["similarity"] == pytest.approx(1.0)
+    assert result["provenance"]["configuration"]["use_chirality"] is False
 
 
 def test_tanimoto_invalid_target():
@@ -52,6 +57,7 @@ def test_sa_score_basic():
     first = result["results"][0]
     assert first["status"] == "succeeded"
     assert 1.0 <= first["sa_score"] <= 10.0
+    assert result["provenance"]["uncertainty"]["quantified"] is False
 
 
 def test_sa_score_invalid_smiles():

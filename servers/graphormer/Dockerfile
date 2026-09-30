@@ -33,6 +33,7 @@ RUN git init "${GRAPHORMER_SOURCE_DIR}" && \
 
 # Copy the server package tree and the shared peer topology.
 COPY --chown=appuser:appuser servers/graphormer /app/servers/graphormer
+COPY --chown=appuser:appuser servers/provenance_tools /app/servers/provenance_tools
 COPY --chown=appuser:appuser servers/peers.py /app/servers/peers.py
 COPY --chown=appuser:appuser servers/__init__.py /app/servers/__init__.py
 

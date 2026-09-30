@@ -73,3 +73,10 @@ their `results` list with `status == "failed"`.
 4. `sa_score(smiles_list=...)` -- prefer easier-to-synthesize molecules (lower).
 5. On the `retrochimera` peer: `predict_retrosynthesis(smiles=...)` -- confirm a
    viable route to purchasable starting materials for the top candidates.
+
+## Provenance
+
+Every evaluation tool returns a top-level `provenance` object. Preserve it when
+passing results between agents or peers; it records exact inputs, tool/model
+versions, configuration, normalized status and failures, assumptions,
+applicability guidance, and uncertainty scope.

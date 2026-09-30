@@ -10,6 +10,9 @@ from __future__ import annotations
 
 from rdkit import DataStructs
 from rdkit.Chem import AllChem
+from rdkit.rdBase import rdkitVersion
+
+from orfb_provenance import attach_provenance
 
 _UNIT = "dimensionless (0-1, higher is more similar to target)"
 _RADIUS = 2
@@ -26,7 +29,8 @@ def tanimoto_similarity(smiles_list: list[str], target_smiles: str) -> dict:
     Returns:
         Dict with ``target_smiles``, ``unit``, ``num_molecules`` and
         ``results`` — one record per molecule with ``smiles``, ``status``,
-        ``similarity`` (float, 0.0 on failure) and ``failure_reason``.
+        ``similarity`` (float, 0.0 on failure) and ``failure_reason`` — plus a
+        structured ``provenance`` envelope.
     """
     if not isinstance(smiles_list, list) or not smiles_list:
         raise ValueError("smiles_list must be a non-empty list of SMILES strings")
@@ -52,9 +56,30 @@ def tanimoto_similarity(smiles_list: list[str], target_smiles: str) -> dict:
             {"smiles": smiles, "status": "succeeded", "similarity": round(similarity, 4), "failure_reason": None}
         )
 
-    return {
+    result = {
         "target_smiles": target_smiles,
         "unit": _UNIT,
         "num_molecules": len(smiles_list),
         "results": results,
     }
+    return attach_provenance(
+        result,
+        tool_name="tanimoto_similarity",
+        tool_distribution="orfb-tools",
+        tool_version_fallback="0.1.0",
+        inputs={"smiles_list": smiles_list, "target_smiles": target_smiles},
+        model={"name": "RDKit Morgan fingerprint Tanimoto similarity", "version": rdkitVersion},
+        configuration={"fingerprint": "Morgan", "radius": _RADIUS, "num_bits": _N_BITS, "use_chirality": False},
+        assumptions=[
+            "Fingerprint similarity is a structural proxy and does not establish similar electrochemical behavior.",
+            "Stereochemistry is not included in the fingerprint.",
+        ],
+        applicability={
+            "status": "assessed_per_molecule",
+            "details": "SMILES that RDKit cannot parse are marked failed; no calibrated similarity threshold is supplied.",
+        },
+        uncertainty={
+            "quantified": False,
+            "details": "Tanimoto similarity is deterministic for the configured fingerprint and has no predictive uncertainty.",
+        },
+    )
