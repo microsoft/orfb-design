@@ -9,11 +9,10 @@ directly in the execution kernel.
 
 from __future__ import annotations
 
+from orfb_provenance import attach_provenance
 from rdkit import Chem
 from rdkit.Chem import Descriptors, rdMolDescriptors
 from rdkit.rdBase import rdkitVersion
-
-from orfb_provenance import attach_provenance
 
 # Descriptor name -> callable computing it from an RDKit Mol.
 _CALCULATORS = {

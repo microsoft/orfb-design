@@ -7,8 +7,9 @@ mol/L.
 
 from __future__ import annotations
 
-from soltrannet_tools import _model
 from orfb_provenance import attach_provenance, distribution_version
+
+from soltrannet_tools import _model
 
 
 def predict_solubility(smiles_list: list[str]) -> dict:

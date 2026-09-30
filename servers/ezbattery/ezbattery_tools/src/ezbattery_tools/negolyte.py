@@ -11,9 +11,10 @@ from __future__ import annotations
 
 from typing import Optional
 
+from orfb_provenance import attach_provenance
+
 from ezbattery_tools import _model
 from ezbattery_tools._provenance import upstream_model_metadata
-from orfb_provenance import attach_provenance
 
 _DEFAULT_ACTIVE_DENSITY = _model._DEFAULT_ACTIVE_DENSITY
 

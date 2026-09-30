@@ -10,10 +10,9 @@ from __future__ import annotations
 import os
 import sys
 
+from orfb_provenance import attach_provenance
 from rdkit.Chem import AllChem
 from rdkit.rdBase import rdkitVersion
-
-from orfb_provenance import attach_provenance
 
 _UNIT = "dimensionless (lower is easier to synthesize, typical range 1-10)"
 

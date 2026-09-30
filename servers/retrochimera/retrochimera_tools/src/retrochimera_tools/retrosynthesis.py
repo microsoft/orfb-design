@@ -17,8 +17,9 @@ import os
 import urllib.error
 import urllib.request
 
-from retrochimera_tools import _model
 from orfb_provenance import attach_provenance, distribution_version
+
+from retrochimera_tools import _model
 
 # Planning can take many minutes on memory-constrained hosts; allow a generous
 # (one-hour) client-side ceiling so slow multi-target runs aren't cut short.

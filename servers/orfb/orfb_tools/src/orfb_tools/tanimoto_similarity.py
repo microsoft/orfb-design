@@ -8,11 +8,10 @@ are to a desired reference structure.
 
 from __future__ import annotations
 
+from orfb_provenance import attach_provenance
 from rdkit import DataStructs
 from rdkit.Chem import AllChem
 from rdkit.rdBase import rdkitVersion
-
-from orfb_provenance import attach_provenance
 
 _UNIT = "dimensionless (0-1, higher is more similar to target)"
 _RADIUS = 2

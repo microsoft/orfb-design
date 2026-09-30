@@ -17,8 +17,9 @@ import os
 import urllib.error
 import urllib.request
 
-from graphormer_tools import _model
 from orfb_provenance import attach_provenance
+
+from graphormer_tools import _model
 
 _SERVICE_TIMEOUT_S = 300.0
 
