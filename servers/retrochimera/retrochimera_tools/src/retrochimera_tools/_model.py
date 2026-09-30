@@ -20,6 +20,7 @@ Enable real planning by:
 
 from __future__ import annotations
 
+import hashlib
 import logging
 import os
 from functools import lru_cache
@@ -78,9 +79,14 @@ def _inventory_path() -> Path:
     return path
 
 
+def _canonical_inventory_sha256(valid_smiles: list[str]) -> str:
+    canonical_contents = "\n".join(sorted(set(valid_smiles))).encode("utf-8")
+    return hashlib.sha256(canonical_contents).hexdigest()
+
+
 @lru_cache(maxsize=1)
-def _load_inventory() -> Any:
-    """Load the user-supplied purchasability inventory as canonicalized SMILES."""
+def _load_inventory_bundle() -> tuple[Any, str]:
+    """Load the inventory and identify the exact canonicalized contents."""
     path = _inventory_path()
     from rdkit import Chem
     from syntheseus.search.mol_inventory import SmilesListInventory
@@ -95,7 +101,16 @@ def _load_inventory() -> Any:
                     valid_smiles.append(Chem.MolToSmiles(mol))
     if not valid_smiles:
         raise ValueError(f"RetroChimera inventory contains no valid SMILES: {path}")
-    return SmilesListInventory(valid_smiles, canonicalize=False)
+    digest = _canonical_inventory_sha256(valid_smiles)
+    return SmilesListInventory(valid_smiles, canonicalize=False), digest
+
+
+def _load_inventory() -> Any:
+    return _load_inventory_bundle()[0]
+
+
+def _inventory_sha256() -> str:
+    return _load_inventory_bundle()[1]
 
 
 def live_worker_count() -> int:
@@ -298,6 +313,7 @@ def _run_real_retrosynthesis(smiles: str, num_results: int) -> dict:
             "attempts": 1,
             "routes": [],
             "route_source": "inventory_match",
+            "inventory_sha256": _inventory_sha256(),
             "all_routes_resolved": None,
             "message": "Target molecule found as purchasable in inventory",
         }
@@ -337,6 +353,7 @@ def _run_real_retrosynthesis(smiles: str, num_results: int) -> dict:
         "attempts": 1,
         "routes": routes,
         "route_source": route_source,
+        "inventory_sha256": _inventory_sha256(),
         "all_routes_resolved": all_resolved,
         "message": message,
     }

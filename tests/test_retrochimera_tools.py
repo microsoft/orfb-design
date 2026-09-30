@@ -39,6 +39,15 @@ def test_inventory_path_accepts_user_file(monkeypatch, tmp_path):
     assert _model._inventory_path() == inventory
 
 
+def test_canonical_inventory_digest_tracks_loaded_contents():
+    from retrochimera_tools import _model
+
+    first = _model._canonical_inventory_sha256(["CCO", "O"])
+    assert first == _model._canonical_inventory_sha256(["CCO", "O"])
+    assert first == _model._canonical_inventory_sha256(["O", "CCO", "CCO"])
+    assert first != _model._canonical_inventory_sha256(["CCO"])
+
+
 def test_retrosynthesis_num_results_bounds():
     with pytest.raises(ValueError):
         predict_retrosynthesis("CCO", num_results=0)
@@ -71,12 +80,13 @@ def test_retrosynthesis_proxies_to_service(monkeypatch):
     import urllib.request
 
     captured = {}
+    service_payload = {"status": "ok", "routes": [], "message": "done", "inventory_sha256": "abc123"}
     expected = {"status": "ok", "routes": [], "message": "done"}
 
     def fake_urlopen(request, timeout=None):
         captured["url"] = request.full_url
         captured["body"] = json.loads(request.data.decode("utf-8"))
-        return _FakeResponse(json.dumps(expected).encode("utf-8"))
+        return _FakeResponse(json.dumps(service_payload).encode("utf-8"))
 
     monkeypatch.setenv("RETROCHIMERA_MODEL_SERVICE_URL", "http://127.0.0.1:8901")
     monkeypatch.setattr(urllib.request, "urlopen", fake_urlopen)
@@ -87,6 +97,7 @@ def test_retrosynthesis_proxies_to_service(monkeypatch):
     assert set(result) == set(expected) | {"provenance"}
     assert result["provenance"]["model_artifact"] == "pistachio"
     assert result["provenance"]["uncertainty"] == "not_quantified"
+    assert result["provenance"]["configuration"] == {"inventory_sha256": "abc123"}
     assert captured["url"] == "http://127.0.0.1:8901/predict"
     assert captured["body"] == {"smiles": "CCO", "num_results": 3}
 

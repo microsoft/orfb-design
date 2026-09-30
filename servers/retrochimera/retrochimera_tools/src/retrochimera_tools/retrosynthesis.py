@@ -16,7 +16,6 @@ import json
 import os
 import urllib.error
 import urllib.request
-from pathlib import Path
 
 from retrochimera_tools import _model
 from orfb_provenance import attach_provenance, distribution_version
@@ -65,7 +64,7 @@ def predict_retrosynthesis(smiles: str, num_results: int = 5) -> dict:
     else:
         result = _model.predict_retrosynthesis(smiles, num_results)
 
-    inventory_path = os.environ.get("RETROCHIMERA_INVENTORY_PATH")
+    inventory_sha256 = result.pop("inventory_sha256", None)
     return attach_provenance(
         result,
         tool_distribution="retrochimera-tools",
@@ -75,7 +74,7 @@ def predict_retrosynthesis(smiles: str, num_results: int = 5) -> dict:
             "version": distribution_version("retrochimera"),
             "artifact": "pistachio",
         },
-        configuration={"inventory_identifier": Path(inventory_path).name} if inventory_path else None,
+        configuration={"inventory_sha256": inventory_sha256} if inventory_sha256 else None,
         applicability="not_assessed",
         uncertainty="not_quantified",
     )

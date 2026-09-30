@@ -22,7 +22,7 @@ search. If multi-step extraction fails to produce a route, the implementation
 falls back to single-step predictions.
 
 Results include a compact `provenance` object with installed tool/model
-versions, the configured inventory identifier, and applicability and
+versions, a SHA-256 identity of the canonicalized loaded inventory, and applicability and
 uncertainty classifications. The ordinary result reports whether routes came
 from multi-step planning, a single-step fallback, or an inventory match.
 
