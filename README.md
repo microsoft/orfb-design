@@ -288,6 +288,13 @@ the MCP endpoint as code-execution access to the containers.
 
 This repository does not currently provide a top-level license. Public
 visibility alone does not grant permission to copy, modify, or redistribute the
-repository as a whole. Third-party components and downloaded model artifacts
-retain their own license and usage terms; review those terms before
-redistribution or deployment.
+repository as a whole.
+
+This MCP server may use or depend on third-party components, such as third-party
+MCP clients, hosts, agents, AI applications, and/or models. You are responsible
+for reviewing and complying with the licenses of any third-party components and
+vetting the security of any third-party components.
+
+This MCP server may provide access to underlying resources, such as tools,
+services, and/or data. Your use of that underlying resource via the MCP server
+is governed by the underlying resource's license terms.
