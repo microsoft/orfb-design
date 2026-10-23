@@ -1,0 +1,6 @@
+retrochimera==1.3.0
+syntheseus==0.9.0
+pytorch-lightning==2.6.6
+torch-geometric==2.8.0.post1
+pandas==3.0.6
+https://download-r2.pytorch.org/whl/cpu/torch-2.14.1%2Bcpu-cp311-cp311-manylinux_2_28_x86_64.whl#sha256=5e38154c8896d426a5df58bf2276b603e82184dfae4f54d77dbb212f36e34f37

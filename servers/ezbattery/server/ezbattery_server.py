@@ -40,6 +40,7 @@ from servers.peers import peer_registry_for
 _EZBATTERY_TOOLS_PKG = str(Path(__file__).resolve().parent.parent / "ezbattery_tools")
 _PROVENANCE_PKG = str(Path(__file__).resolve().parents[2] / "provenance_tools")
 _ENVIRONMENT_FILE = Path(__file__).resolve().parent.parent / "environment.yml"
+_REQUIREMENTS_FILE = Path(__file__).resolve().parent.parent / "requirements.txt"
 _SKILL_PATH = Path(__file__).resolve().parent.parent / "skills" / "SKILL.md"
 
 EZBATTERY_SKILLS = [
@@ -95,8 +96,8 @@ config = ServerConfig(
     dependency_file=ENVIRONMENT_YML,
     auto_build=True,
     additional_commands=[
-        # Small pip-only helper EZBattery imports (not on conda-forge).
-        "python -m pip install ismember",
+        # Hash-locked pip-only helper imported by EZBattery.
+        f"python -m pip install --no-deps --require-hashes -r {_REQUIREMENTS_FILE}",
         f"python -m pip install --no-deps {_PROVENANCE_PKG}",
         # In-kernel tools package with the staged upstream EZBattery modules.
         f"python -m pip install --no-deps {_EZBATTERY_TOOLS_PKG}",

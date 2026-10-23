@@ -22,7 +22,6 @@
 
 SHELL := /bin/bash
 
-AGORA_WORKBENCH_VERSION ?= 0.3.1
 BASE_IMAGE              ?= mcp-server-base:local
 BASE_DOCKERFILE         := deployment/docker/base.Dockerfile
 
@@ -31,7 +30,7 @@ GRAPHORMER_REDUCTION_CKPT := model-assets/graphormer/reduction_checkpoint_best.p
 GRAPHORMER_OXIDATION_CKPT := model-assets/graphormer/oxidation_checkpoint_best.pt
 RETRO_CKPT                := model-assets/retrochimera/pistachio/models.json
 
-.PHONY: all up build base-image checkpoints graphormer-checkpoints retrochimera-checkpoint ezbattery-source down ps logs clean-checkpoints
+.PHONY: all up build base-image checkpoints graphormer-checkpoints retrochimera-checkpoint ezbattery-source dependency-locks down ps logs clean-checkpoints
 
 all: up
 
@@ -48,6 +47,25 @@ retrochimera-checkpoint:
 ezbattery-source:
 	scripts/fetch_ezbattery_source.sh
 
+## Regenerate the root and image-specific dependency locks.
+dependency-locks:
+	uv lock
+	uv pip compile deployment/docker/ipykernel-requirements.in \
+	  --python-version 3.9 --python-platform x86_64-unknown-linux-gnu \
+	  --generate-hashes --quiet --output-file deployment/docker/ipykernel-requirements.txt
+	uv pip compile servers/retrochimera/requirements.in \
+	  --python-version 3.11 --python-platform x86_64-manylinux_2_28 \
+	  --generate-hashes --quiet --output-file servers/retrochimera/requirements.txt
+	uv pip compile servers/soltrannet/torch-requirements.in \
+	  --python-version 3.11 --python-platform x86_64-manylinux_2_28 \
+	  --generate-hashes --quiet --output-file servers/soltrannet/torch-requirements.txt
+	uv pip compile servers/soltrannet/requirements.in \
+	  --python-version 3.11 --python-platform x86_64-unknown-linux-gnu \
+	  --no-deps --generate-hashes --quiet --output-file servers/soltrannet/requirements.txt
+	uv pip compile servers/ezbattery/requirements.in \
+	  --python-version 3.11 --python-platform x86_64-unknown-linux-gnu \
+	  --no-deps --generate-hashes --quiet --output-file servers/ezbattery/requirements.txt
+
 $(GRAPHORMER_REDUCTION_CKPT) $(GRAPHORMER_OXIDATION_CKPT):
 	scripts/fetch_checkpoints.sh graphormer
 
@@ -57,7 +75,6 @@ $(RETRO_CKPT):
 ## Build the Agora Workbench base image the domain/hub images extend.
 base-image:
 	docker build \
-	  --build-arg AGORA_WORKBENCH_VERSION="$(AGORA_WORKBENCH_VERSION)" \
 	  -f "$(BASE_DOCKERFILE)" \
 	  -t "$(BASE_IMAGE)" \
 	  .

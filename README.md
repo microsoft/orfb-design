@@ -258,6 +258,9 @@ uv run pytest
 uv run --with ruff ruff check .
 ```
 
+After changing Python dependency inputs, regenerate the root and image-specific
+hash locks with `make dependency-locks`.
+
 Repository layout:
 
 ```text
