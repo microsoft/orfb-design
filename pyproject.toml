@@ -5,7 +5,8 @@ description = "Agora Workbench MCP server for organic redox-flow-battery (ORFB) 
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
-    "agora-workbench[azure]==0.3.1",
+    "agora-workbench[azure,catalog-vector]==0.3.1",
+    "fastmcp==3.4.10",
 ]
 
 [project.optional-dependencies]

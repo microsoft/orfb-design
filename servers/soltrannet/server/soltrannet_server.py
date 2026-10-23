@@ -32,6 +32,9 @@ from servers.soltrannet.tools import SOLTRANNET_TOOLS
 _SOLTRANNET_TOOLS_PKG = str(Path(__file__).resolve().parent.parent / "soltrannet_tools")
 _PROVENANCE_PKG = str(Path(__file__).resolve().parents[2] / "provenance_tools")
 _ENVIRONMENT_FILE = Path(__file__).resolve().parent.parent / "environment.yml"
+_REQUIREMENTS_FILE = Path(__file__).resolve().parent.parent / "requirements.txt"
+_TORCH_REQUIREMENTS_FILE = Path(__file__).resolve().parent.parent / "torch-requirements.txt"
+_PATCH_SCRIPT = Path(__file__).resolve().parent.parent / "patch_soltrannet.py"
 _SKILL_PATH = Path(__file__).resolve().parent.parent / "skills" / "SKILL.md"
 
 SOLTRANNET_SKILLS = [
@@ -71,12 +74,15 @@ config = ServerConfig(
     dependency_file=ENVIRONMENT_YML,
     auto_build=True,
     additional_commands=[
-        # CPU build of torch (keeps the image lean and avoids pulling CUDA).
-        "python -m pip install torch --index-url https://download.pytorch.org/whl/cpu",
+        # Hash-locked CPU torch stack keeps the image lean and avoids CUDA.
+        f"python -m pip install --require-hashes -r {_TORCH_REQUIREMENTS_FILE}",
         # SolTranNet itself. Installed with --no-deps so pip does NOT pull the
         # PyPI ``pathlib`` backport (which shadows and breaks the stdlib module on
         # modern Python); torch is installed above and rdkit/numpy come from conda.
-        "python -m pip install --no-deps soltrannet",
+        f"python -m pip install --no-deps --require-hashes -r {_REQUIREMENTS_FILE}",
+        # SolTranNet 1.0.0 uses the removed pkg_resources API only to find its
+        # bundled weights; replace that lookup with pathlib.
+        f"python {_PATCH_SCRIPT}",
         f"python -m pip install --no-deps {_PROVENANCE_PKG}",
         # In-kernel SolTranNet tools (declares no runtime deps).
         f"python -m pip install --no-deps {_SOLTRANNET_TOOLS_PKG}",

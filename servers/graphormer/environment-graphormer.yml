@@ -32,7 +32,7 @@ dependencies:
       - protobuf==4.25.3
       - rdkit-pypi==2021.9.3
       - torch-geometric==1.7.2
-      - https://data.dgl.ai/wheels/dgl-0.7.2-cp39-cp39-manylinux1_x86_64.whl
-      - https://data.pyg.org/whl/torch-1.9.0%2Bcu111/torch_scatter-2.0.9-cp39-cp39-linux_x86_64.whl
-      - https://data.pyg.org/whl/torch-1.9.0%2Bcu111/torch_sparse-0.6.12-cp39-cp39-linux_x86_64.whl
-      - https://download.pytorch.org/whl/cu111/torch-1.9.1%2Bcu111-cp39-cp39-linux_x86_64.whl
+      - https://data.dgl.ai/wheels/dgl-0.7.2-cp39-cp39-manylinux1_x86_64.whl#sha256=2140b916ca8f6ce08cc4adc4030193a41a1cea187846af6d132aa0db60cafac8
+      - https://data.pyg.org/whl/torch-1.9.0%2Bcu111/torch_scatter-2.0.9-cp39-cp39-linux_x86_64.whl#sha256=92b35d809350b6640e378e3ea35a3d7f62fbc5990ba8180a07279515de6897f8
+      - https://data.pyg.org/whl/torch-1.9.0%2Bcu111/torch_sparse-0.6.12-cp39-cp39-linux_x86_64.whl#sha256=722e47a8e56a6a37fe50b7f2a2d57ec243d9fd0197c5928b19e20803865da231
+      - https://download.pytorch.org/whl/cu111/torch-1.9.1%2Bcu111-cp39-cp39-linux_x86_64.whl#sha256=c0d2cbb51f59c4a915393cf06c08a43391fcde95f21fe68f1d51727eb3b87353

@@ -41,6 +41,7 @@ from servers.retrochimera.tools import RETROCHIMERA_TOOLS
 _RETRO_TOOLS_PKG = str(Path(__file__).resolve().parent.parent / "retrochimera_tools")
 _PROVENANCE_PKG = str(Path(__file__).resolve().parents[2] / "provenance_tools")
 _ENVIRONMENT_FILE = Path(__file__).resolve().parent.parent / "environment.yml"
+_REQUIREMENTS_FILE = Path(__file__).resolve().parent.parent / "requirements.txt"
 _SKILL_PATH = Path(__file__).resolve().parent.parent / "skills" / "SKILL.md"
 
 RETROCHIMERA_SKILLS = [
@@ -97,13 +98,8 @@ config = ServerConfig(
     dependency_file=ENVIRONMENT_YML,
     auto_build=True,
     additional_commands=[
-        # RetroChimera single-step model + Syntheseus multi-step search. Four
-        # deps are undeclared by the packages but required at import/run time:
-        # ``pytorch_lightning`` (models/lightning.py), ``torch_geometric``
-        # (models/template_localization.py), and ``pandas`` (rule application).
-        # ``rdkit`` is pulled in transitively. CPU torch wheels run fine without
-        # a GPU (submodels just run sequentially).
-        ("python -m pip install retrochimera==1.3.0 syntheseus pytorch_lightning torch_geometric pandas"),
+        # Hash-locked RetroChimera, Syntheseus, and complete planning stack.
+        f"python -m pip install --require-hashes -r {_REQUIREMENTS_FILE}",
         f"python -m pip install --no-deps {_PROVENANCE_PKG}",
         # In-kernel RetroChimera tools (declares no runtime deps).
         f"python -m pip install --no-deps {_RETRO_TOOLS_PKG}",
