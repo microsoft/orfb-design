@@ -289,9 +289,7 @@ the MCP endpoint as code-execution access to the containers.
 
 ## License status
 
-This repository does not currently provide a top-level license. Public
-visibility alone does not grant permission to copy, modify, or redistribute the
-repository as a whole.
+This repository is licensed under the [MIT License](LICENSE.TXT).
 
 This MCP server may use or depend on third-party components, such as third-party
 MCP clients, hosts, agents, AI applications, and/or models. You are responsible
