@@ -58,3 +58,4 @@ nav:
       - EZBattery: servers/ezbattery.md
   - Tutorials:
       - Deploy and connect an agent: tutorials/deploy-and-use.md
+  - Disclaimers: disclaimers.md
