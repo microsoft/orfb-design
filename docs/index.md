@@ -65,3 +65,7 @@ tests/                             lightweight regression tests
 Large model assets and commercial inventory data are deliberately not stored
 in the repository. See the [deployment tutorial](tutorials/deploy-and-use.md)
 for the required Graphormer checkpoints and RetroChimera inventory.
+
+---
+
+[Disclaimers](disclaimers.md)
