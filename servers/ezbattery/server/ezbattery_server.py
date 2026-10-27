@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+
 """EZBattery Cell-Level RFB Simulation MCP Server — device-level ORFB evaluation.
 
 Provides an ``execute_ezbattery_code`` MCP tool plus ``simulate_negolyte``,

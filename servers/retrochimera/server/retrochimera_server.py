@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+
 """RetroChimera Retrosynthesis MCP Server — route prediction.
 
 Provides an ``execute_retrochimera_code`` MCP tool plus a

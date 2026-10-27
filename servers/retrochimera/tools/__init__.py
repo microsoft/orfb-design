@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+
 """RetroChimera domain tool definitions.
 
 Exports ``RETROCHIMERA_TOOLS`` — server-side ``ToolDefinition`` metadata for the

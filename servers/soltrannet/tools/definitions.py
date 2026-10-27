@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+
 """Tool definitions (metadata) for the soltrannet aqueous-solubility domain.
 
 Server-side schemas only — the implementation lives in the ``soltrannet_tools``

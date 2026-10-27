@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+
 """Input-validation tests for the soltrannet aqueous-solubility tool.
 
 Real inference needs the SolTranNet model stack (soltrannet + torch + rdkit),

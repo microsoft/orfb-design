@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+
 """Tanimoto similarity to a target molecule using Morgan fingerprints.
 
 Native RDKit implementation mirroring the ``molecule_properties`` endpoint's

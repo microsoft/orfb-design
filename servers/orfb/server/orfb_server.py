@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+
 """ORFB Design MCP Server — RDKit molecule characterization.
 
 Provides an ``execute_orfb_code`` MCP tool backed by a conda environment with

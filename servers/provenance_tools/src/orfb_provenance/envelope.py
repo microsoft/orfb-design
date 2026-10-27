@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+
 """Build compact scientific provenance for tool results."""
 
 from __future__ import annotations

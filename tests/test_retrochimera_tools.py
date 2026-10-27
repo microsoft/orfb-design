@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+
 """Input-validation tests for the retrochimera retrosynthesis tool.
 
 Real planning needs syntheseus + the RetroChimera model stack and checkpoints,

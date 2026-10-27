@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+
 # ORFB Design Hub — RouterServer
 #
 # Aggregates the orfb / graphormer / retrochimera servers behind one MCP

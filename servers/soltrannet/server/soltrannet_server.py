@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+
 """SolTranNet Aqueous-Solubility MCP Server — logS prediction.
 
 Provides an ``execute_soltrannet_code`` MCP tool plus a ``predict_solubility``

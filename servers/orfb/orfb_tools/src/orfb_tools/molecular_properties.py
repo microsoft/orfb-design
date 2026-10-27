@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+
 """General molecular property calculation with RDKit.
 
 Native RDKit descriptors useful for organic redox-flow-battery (ORFB) molecule

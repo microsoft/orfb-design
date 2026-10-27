@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+
 """EZBattery domain tool definitions.
 
 Exports ``EZBATTERY_TOOLS`` — server-side ``ToolDefinition`` metadata for the

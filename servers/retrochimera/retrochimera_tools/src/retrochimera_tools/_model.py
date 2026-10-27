@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+
 """In-kernel RetroChimera retrosynthesis planning.
 
 Faithful port of the original standalone FastAPI ``retrochimera`` service's

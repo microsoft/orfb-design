@@ -1,1 +1,4 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+
 ipykernel==6.29.5

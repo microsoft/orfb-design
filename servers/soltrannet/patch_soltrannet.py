@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+
 """Remove SolTranNet's deprecated runtime dependency on pkg_resources."""
 
 from importlib.util import find_spec

@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+
 # RetroChimera Retrosynthesis MCP Server (real model, CPU inference)
 #
 # Prerequisite — build the PyPI-backed agora-workbench base image:

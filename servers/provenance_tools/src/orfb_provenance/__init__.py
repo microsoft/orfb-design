@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+
 """Structured provenance helpers shared by ORFB Design tool packages."""
 
 from .envelope import attach_provenance, distribution_version

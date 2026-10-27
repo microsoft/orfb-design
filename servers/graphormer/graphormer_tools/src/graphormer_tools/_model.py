@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+
 """Graphormer redox model loading and inference.
 
 The checkpoints are standard Fairseq training checkpoints containing a model

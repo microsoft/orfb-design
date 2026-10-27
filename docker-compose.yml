@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+
 # ORFB Design network — full multi-server stack.
 #
 # Brings up the three domain servers plus the aggregating hub on one Docker

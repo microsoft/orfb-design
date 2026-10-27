@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+
 """Tests for the shared structured provenance envelope."""
 
 from orfb_provenance import attach_provenance

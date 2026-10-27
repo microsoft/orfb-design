@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+
 """ORFB Design Hub — RouterServer aggregating the ORFB design network.
 
 A single MCP endpoint that fronts the five domain servers in this repo:

@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+
 """RetroChimera retrosynthesis domain state vocabulary."""
 
 from enum import Enum

@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+
 """Synthetic accessibility (SA) score using RDKit's contrib SA_Score.
 
 Native RDKit implementation mirroring the ``molecule_properties`` endpoint's

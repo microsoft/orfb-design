@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+
 """Test configuration.
 
 The in-kernel tool packages (``orfb_tools``, ``graphormer_tools``,

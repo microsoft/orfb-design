@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+
 """Graphormer redox domain state vocabulary."""
 
 from enum import Enum

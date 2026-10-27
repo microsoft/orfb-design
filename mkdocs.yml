@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+
 site_name: ORFB Design
 site_description: Documentation for the ORFB Design molecular-design server network.
 site_url: https://microsoft.github.io/orfb-design/

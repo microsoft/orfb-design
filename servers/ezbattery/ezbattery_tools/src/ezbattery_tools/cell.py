@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+
 """Cell-level ORFB simulation for the ezbattery server.
 
 Thin wrapper over the in-kernel EZBattery model (``_model``).

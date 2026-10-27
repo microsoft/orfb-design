@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+
 """Graphormer domain tool definitions.
 
 Exports ``GRAPHORMER_TOOLS`` — server-side ``ToolDefinition`` metadata for the

@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+
 """Tool definitions (metadata) for the graphormer redox domain.
 
 Server-side schemas only — implementations live in the ``graphormer_tools``

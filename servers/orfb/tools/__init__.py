@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+
 """ORFB domain tool definitions.
 
 Exports ``ORFB_TOOLS``, a list of all ``ToolDefinition`` objects. These are

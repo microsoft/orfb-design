@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+
 """ORFB domain state vocabulary (RDKit characterization server).
 
 Defines the canonical state tokens for the ORFB server's RDKit tool graph.

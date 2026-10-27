@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+
 """Retrosynthesis route prediction for the retrochimera server.
 
 The RetroChimera planning model is loaded once per container by a co-located

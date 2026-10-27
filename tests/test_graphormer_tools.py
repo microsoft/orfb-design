@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+
 """Tests for Graphormer redox validation, checkpoint loading, and inference."""
 
 import argparse
