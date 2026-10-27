@@ -10,16 +10,6 @@ scientific domains behind one MCP endpoint:
 - retrosynthetic route planning; and
 - cell-level redox-flow-battery simulation.
 
-The servers are built with
-[Agora Workbench](https://github.com/microsoft/agora-workbench). Each domain
-server provides an isolated Python execution environment, domain tools, and an
-agent skill. The `orfb-hub` router presents the complete network through one
-Streamable HTTP endpoint:
-
-```text
-http://127.0.0.1:8050/mcp
-```
-
 !!! warning "Research software"
 
     Model predictions and simulated cell metrics are computational screening
@@ -28,6 +18,13 @@ http://127.0.0.1:8050/mcp
     toxicology, chemical-reactivity, process-hazard, containment, or
     waste-management assessments. Evaluate these considerations separately
     before experimental use.
+
+## Start here
+
+- [Understand the server network](servers/index.md)
+- [Deploy the network and connect an agent](tutorials/deploy-and-use.md)
+- [Read the repository README](https://github.com/microsoft/orfb-design#readme)
+- [Learn about Agora Workbench](https://microsoft.github.io/agora-workbench/)
 
 ## Servers
 
@@ -44,12 +41,15 @@ The domain servers can run independently, but the full network is designed for
 an agent to move from molecular characterization through model prediction and
 synthesis assessment to cell-level evaluation.
 
-## Start here
+The servers are built with
+[Agora Workbench](https://github.com/microsoft/agora-workbench). Each domain
+server provides an isolated Python execution environment, domain tools, and an
+agent skill. The `orfb-hub` router presents the complete network through one
+Streamable HTTP endpoint:
 
-- [Understand the server network](servers/index.md)
-- [Deploy the network and connect an agent](tutorials/deploy-and-use.md)
-- [Read the repository README](https://github.com/microsoft/orfb-design#readme)
-- [Learn about Agora Workbench](https://microsoft.github.io/agora-workbench/)
+```text
+http://127.0.0.1:8050/mcp
+```
 
 ## Repository layout
 

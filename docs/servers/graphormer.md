@@ -33,14 +33,19 @@ The `graphormer-redox` skill explains the potential reference frame, batch
 limits, checkpoint requirements, and when to use SolTranNet instead. Redox
 predictions are fast enough to run synchronously in batches.
 
-## Runtime and assets
+## Open-source foundation
 
-The container builds the public
+The model implementation comes from
 [`microsoft/Graphormer`](https://github.com/microsoft/Graphormer) source at
 commit
 [`59c0dec`](https://github.com/microsoft/Graphormer/commit/59c0decffcade9df81d29dcc178a489b31958bab)
-and its pinned Fairseq submodule. It reconstructs the model from Fairseq
-state-dict checkpoints and runs CPU inference.
+and its pinned Fairseq submodule. RDKit, DGL, PyTorch, and PyTorch Geometric
+provide the molecular graph and model runtime.
+
+## Runtime and assets
+
+The server reconstructs Graphormer models from Fairseq state-dict checkpoints
+and runs inference on CPU.
 
 Two separately supplied files are required:
 
