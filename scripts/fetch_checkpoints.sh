@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+
 # Fetch and stage the model checkpoints the orfb-design Docker build bakes in.
 #
 # The graphormer and retrochimera server images run real CPU inference and

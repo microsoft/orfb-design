@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+
 # ORFB Design network — standardized build & launch.
 #
 # The graphormer / retrochimera server images bake in model checkpoints staged

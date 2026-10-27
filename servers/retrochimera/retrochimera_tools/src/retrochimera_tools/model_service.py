@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+
 """Co-located RetroChimera model service (Agora Workbench sidecar).
 
 The RetroChimera planning stack (a ~4.4 GB checkpoint that balloons to ~10 GB

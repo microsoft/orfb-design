@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+
 """EZBattery cell-level RFB simulation domain state vocabulary."""
 
 from enum import Enum

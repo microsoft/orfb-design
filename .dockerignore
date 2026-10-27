@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+
 # Keep the Docker build context lean. Each server Dockerfile copies only the
 # paths it needs; this excludes large/irrelevant trees from the context tarball.
 .git

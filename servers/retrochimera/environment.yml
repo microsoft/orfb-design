@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+
 # RetroChimera planning environment (CPU inference).
 #
 # A clean, modern pip stack (unlike graphormer): conda provides only the

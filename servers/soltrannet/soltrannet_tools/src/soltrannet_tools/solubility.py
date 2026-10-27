@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+
 """Aqueous-solubility predictor for the soltrannet server.
 
 Thin wrapper over the in-kernel SolTranNet model (``_model``). Solubilities are

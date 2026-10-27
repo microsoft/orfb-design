@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+
 """ORFB tools — RDKit-native molecule characterization functions.
 
 Installed into the ORFB server's execution kernel so tool proxies can import

@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+
 """In-kernel EZBattery cell-level redox-flow-battery simulation.
 
 Wraps `EZBattery <https://github.com/pnnl/EZBattery>`_ (Pacific Northwest

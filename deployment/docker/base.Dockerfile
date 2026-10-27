@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+
 # Base image for ORFB Design MCP servers.
 #
 # Installs the published agora-workbench release from PyPI; no source checkout

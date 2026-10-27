@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+
 """Tests for the ezbattery cell-simulation tools.
 
 The pinned EZBattery source staged by scripts/fetch_ezbattery_source.sh is pure

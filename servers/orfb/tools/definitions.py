@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+
 """Tool definitions (metadata) for the ORFB molecule-design domain.
 
 This module contains only ``ToolDefinition`` objects — server-side schemas,

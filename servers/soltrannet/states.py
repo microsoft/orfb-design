@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+
 """SolTranNet aqueous-solubility domain state vocabulary."""
 
 from enum import Enum

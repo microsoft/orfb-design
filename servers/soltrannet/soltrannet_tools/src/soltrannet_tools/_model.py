@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+
 """In-kernel SolTranNet aqueous-solubility inference.
 
 Wraps `SolTranNet <https://github.com/gnina/SolTranNet>`_ (Francoeur & Koes,

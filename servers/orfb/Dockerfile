@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+
 # ORFB Design MCP Server (RDKit molecular characterization)
 #
 # Prerequisite — build the PyPI-backed agora-workbench base image:

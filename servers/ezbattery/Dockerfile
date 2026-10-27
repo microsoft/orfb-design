@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+
 # EZBattery Cell-Level RFB Simulation MCP Server (real model, CPU)
 #
 # Prerequisite — build the PyPI-backed agora-workbench base image:

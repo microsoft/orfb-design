@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+
 """Negolyte device-level evaluation for the ezbattery server.
 
 Thin wrappers over the in-kernel EZBattery model (``_model``). Map molecule-level

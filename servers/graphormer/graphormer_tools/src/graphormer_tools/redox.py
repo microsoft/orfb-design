@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+
 """Redox potential predictors (reduction / oxidation) for the graphormer server.
 
 Potentials are in volts versus the standard hydrogen electrode (SHE).

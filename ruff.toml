@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+
 line-length = 120
 extend-exclude = [
     "*.ipynb",

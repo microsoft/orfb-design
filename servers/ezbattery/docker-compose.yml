@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+
 # EZBattery Cell-Level RFB Simulation MCP Server — local development
 #
 # Build the agora-workbench base image first (see Dockerfile header), then:

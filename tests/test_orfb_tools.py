@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+
 """Smoke tests for the ORFB kernel tool implementations (RDKit-native).
 
 These exercise the RDKit characterization tools (real computation). They run

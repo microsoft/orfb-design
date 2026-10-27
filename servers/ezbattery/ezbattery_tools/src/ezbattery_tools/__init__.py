@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+
 """EZBattery cell-level RFB simulation tools — in-kernel device evaluation."""
 
 from ezbattery_tools.cell import simulate_cell

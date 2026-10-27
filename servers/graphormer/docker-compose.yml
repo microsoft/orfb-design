@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+
 # Graphormer Redox MCP Server — local development
 #
 # Build the agora-workbench base image first (see Dockerfile header), then:

@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+
 """EZBattery provenance metadata that must not invalidate completed simulations."""
 
 from __future__ import annotations

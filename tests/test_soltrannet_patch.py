@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+
 """Tests for the installed SolTranNet compatibility patch."""
 
 from servers.soltrannet.patch_soltrannet import patch_predict_module

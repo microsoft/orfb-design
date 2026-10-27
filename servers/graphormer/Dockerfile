@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+
 # Graphormer Redox MCP Server (real model, CPU inference)
 #
 # Prerequisite — build the PyPI-backed agora-workbench base image:

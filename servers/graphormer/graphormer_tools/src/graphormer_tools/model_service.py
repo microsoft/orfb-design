@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+
 """Co-located Graphormer redox model service (Agora Workbench sidecar).
 
 The Graphormer redox checkpoints are loaded **once per container** here and

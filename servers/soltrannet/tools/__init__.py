@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+
 """SolTranNet domain tool definitions.
 
 Exports ``SOLTRANNET_TOOLS`` — server-side ``ToolDefinition`` metadata for the

@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+
 """Graphormer Redox MCP Server — reduction / oxidation potential prediction.
 
 Provides an ``execute_graphormer_code`` MCP tool plus ``predict_reduction_

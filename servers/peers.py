@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+
 """Shared peer topology for the ORFB design server network.
 
 Each domain server passes ``peer_registry=peer_registry_for("<name>")`` into its
