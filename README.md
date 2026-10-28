@@ -1,10 +1,23 @@
 # ORFB Design
 
 ORFB Design is a local [Model Context Protocol (MCP)](https://modelcontextprotocol.io/)
-server network for screening molecules for organic redox-flow batteries. It
-combines molecular descriptors, redox-potential and solubility models,
-retrosynthesis planning, and cell-level simulation behind a single Agora
-Workbench router.
+server network built on **[Microsoft Agora Workbench](https://github.com/microsoft/agora-workbench)**
+for screening molecules for organic redox-flow batteries. It combines molecular
+descriptors, redox-potential and solubility models, retrosynthesis planning, and
+cell-level simulation behind a single Workbench router.
+
+## Built on Agora Workbench
+
+Agora Workbench provides the MCP routing and execution framework for the hub
+and all five domain servers, not just the router. It supplies persistent Python
+execution environments, tool and skill discovery, workflow-state inspection,
+and utilities for sessions, cross-server object transfer, artifacts, and
+background jobs. ORFB Design adds the domain-specific scientific tools and
+model integrations.
+
+Learn more in the [Agora Workbench documentation](https://microsoft.github.io/agora-workbench/).
+
+## Deployment architecture
 
 You host the network yourself: the default Docker Compose deployment runs the
 hub and five domain servers as separate containers on your machine or VM.
