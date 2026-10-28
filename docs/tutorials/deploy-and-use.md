@@ -14,10 +14,8 @@ Install:
 - `curl`, `unzip`, and `md5sum`; and
 - enough disk and memory for the scientific images and model assets.
 
-The complete network additionally requires:
-
-- compatible Graphormer reduction and oxidation checkpoints; and
-- a RetroChimera purchasability inventory that you are permitted to use.
+The complete network additionally requires compatible Graphormer reduction and
+oxidation checkpoints.
 
 The RetroChimera image and runtime are the most resource intensive.
 
@@ -37,28 +35,9 @@ export GRAPHORMER_REDUCTION_CHECKPOINT_SOURCE=/absolute/path/to/reduction_checkp
 export GRAPHORMER_OXIDATION_CHECKPOINT_SOURCE=/absolute/path/to/oxidation_checkpoint_best.pt
 ```
 
-Create a Compose override that mounts the RetroChimera inventory:
-
-```bash
-export RETROCHIMERA_INVENTORY_HOST_PATH=/absolute/path/to/inventory.smi
-
-cat > docker-compose.inventory.yml <<'YAML'
-services:
-  retrochimera-server:
-    volumes:
-      - type: bind
-        source: ${RETROCHIMERA_INVENTORY_HOST_PATH}
-        target: /data/retrochimera-inventory.smi
-        read_only: true
-    environment:
-      RETROCHIMERA_INVENTORY_PATH: /data/retrochimera-inventory.smi
-YAML
-
-export COMPOSE_FILE=docker-compose.yml:docker-compose.inventory.yml
-```
-
-The inventory is a UTF-8 file with one SMILES per line. Blank lines and lines
-beginning with `#` are ignored.
+RetroChimera uses the bundled `retrochimera_inventory.csv` by default. To use a
+different UTF-8, one-SMILES-per-line inventory, mount it into the container and
+set `RETROCHIMERA_INVENTORY_PATH` to its container path.
 
 ## 4. Build and start
 
@@ -205,20 +184,21 @@ make graphormer-checkpoints
 make up
 ```
 
-RetroChimera also needs a separate inventory. If it reports a missing or
-unreadable inventory, check the host file and restore the step 3 override.
-Use the resolved configuration to verify the mount:
+RetroChimera's default inventory is bundled in its Python package. If it reports
+a missing or unreadable inventory, rebuild the image from the current
+repository and check whether an override is set:
 
 ```bash
 docker compose config
 ```
 
-Confirm that `retrochimera-server` mounts the inventory read-only at
-`/data/retrochimera-inventory.smi` and sets `RETROCHIMERA_INVENTORY_PATH` to
-that same container path. After correcting the configuration, apply it:
+Unset `RETROCHIMERA_INVENTORY_PATH` to return to the bundled inventory. If you
+intentionally replace it, confirm that the configured container path is backed
+by a readable, read-only mount. After correcting the configuration, rebuild and
+apply it:
 
 ```bash
-docker compose up -d retrochimera-server orfb-hub
+docker compose up -d --build retrochimera-server orfb-hub
 ```
 
 ### The agent is on another machine

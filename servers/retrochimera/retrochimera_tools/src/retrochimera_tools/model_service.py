@@ -181,7 +181,7 @@ def main() -> None:
     host = os.environ.get("SIDECAR_HOST", "127.0.0.1")
     port = int(os.environ.get("SIDECAR_PORT", str(_DEFAULT_PORT)))
 
-    LOGGER.info("Validating user-supplied purchasability inventory...")
+    LOGGER.info("Validating purchasability inventory...")
     _model._load_inventory()
 
     override = _model._num_processes_override()

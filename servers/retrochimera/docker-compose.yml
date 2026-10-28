@@ -18,7 +18,7 @@ services:
       - ./published_artifacts:/tmp/published_artifacts
       # Mount real model checkpoints here and set RETROCHIMERA_CHECKPOINT_DIR to enable planning:
       # - /host/path/to/checkpoints:/app/checkpoints:ro
-      # Mount a user-supplied purchasability inventory:
+      # To replace the bundled purchasability inventory, mount another file:
       # - /host/path/inventory.smi:/data/retrochimera-inventory.smi:ro
     environment:
       PORT: "8000"

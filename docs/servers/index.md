@@ -10,7 +10,7 @@ session state.
 | [`orfb-hub`](hub.md) | 8050 | Unified MCP entry point | None |
 | [`orfb`](orfb.md) | 8040 | Molecular characterization | None |
 | [`graphormer`](graphormer.md) | 8041 | Redox-potential prediction | Reduction and oxidation checkpoints |
-| [`retrochimera`](retrochimera.md) | 8042 | Retrosynthesis planning | Public model plus user inventory |
+| [`retrochimera`](retrochimera.md) | 8042 | Retrosynthesis planning | Public model; inventory included |
 | [`soltrannet`](soltrannet.md) | 8043 | Aqueous-solubility prediction | None; weights ship with the package |
 | [`ezbattery`](ezbattery.md) | 8044 | Cell simulation | None |
 
