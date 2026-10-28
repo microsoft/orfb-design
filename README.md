@@ -6,6 +6,30 @@ combines molecular descriptors, redox-potential and solubility models,
 retrosynthesis planning, and cell-level simulation behind a single Agora
 Workbench router.
 
+You host the network yourself: the default Docker Compose deployment runs the
+hub and five domain servers as separate containers on your machine or VM.
+Scientific models and simulations run on that host, not through hosted
+model-provider APIs. Setup downloads software and some model assets; other
+assets must be supplied separately.
+
+```text
+MCP-compatible AI agent (chooses tools and orchestrates the workflow)
+    |
+    v
+ORFB Hub (discovers tools and routes requests; does not run models)
+    |
+    +-- ORFB / RDKit  : molecular characterization
+    +-- Graphormer   : redox-potential prediction
+    +-- RetroChimera : synthesis planning
+    +-- SolTranNet   : aqueous-solubility prediction
+    +-- EZBattery    : cell simulation
+        [Hub and all five domain servers run on your deployment host]
+```
+
+The agent connects to one hub endpoint; the hub reaches the domain containers
+over a private Docker network. Each domain server performs its own scientific
+computations. See the [hub documentation](docs/servers/hub.md) for details.
+
 The project is research software intended for computational screening. Model
 predictions and simulated cell metrics are not experimental evidence, and
 retrosynthetic routes are planning suggestions rather than laboratory

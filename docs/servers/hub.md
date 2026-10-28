@@ -1,7 +1,37 @@
 # ORFB Hub
 
-The ORFB Hub is an Agora Workbench `RouterServer` that aggregates the five
-domain servers. It is the normal entry point for an MCP-compatible agent.
+The ORFB Hub is the single gateway an MCP-compatible AI agent uses to access
+the five scientific domain servers. It is built on the Agora Workbench
+`RouterServer`.
+
+You host the hub and domain servers yourself. In the default Docker Compose
+deployment, all six run as separate containers on your machine or VM.
+Scientific models and simulations run on that host, not through hosted
+model-provider APIs. Setup downloads software and some model assets; other
+assets must be supplied separately.
+
+## Architecture
+
+```text
+MCP-compatible AI agent (chooses tools and orchestrates the workflow)
+    |
+    v
+ORFB Hub (discovers tools and routes requests; does not run models)
+    |
+    +-- ORFB / RDKit  : molecular characterization
+    +-- Graphormer   : redox-potential prediction
+    +-- RetroChimera : synthesis planning
+    +-- SolTranNet   : aqueous-solubility prediction
+    +-- EZBattery    : cell simulation
+        [Hub and all five domain servers run on your deployment host]
+```
+
+The agent normally connects only to the hub. The hub reaches domain containers
+over a private Docker network, and each domain server performs its own
+scientific computations. The hub does not autonomously choose the research
+workflow; the connected agent does.
+
+## Connection
 
 | Property | Value |
 |---|---|
