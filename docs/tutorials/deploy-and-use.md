@@ -90,6 +90,9 @@ Follow logs if a service remains unhealthy:
 make logs
 ```
 
+See [Troubleshooting](#troubleshooting) if assets are missing, startup stalls,
+or the agent cannot reach the hub.
+
 ## 5. Connect an agent
 
 Any MCP client that supports Streamable HTTP can connect to:
@@ -167,3 +170,75 @@ remove them and the download cache:
 ```bash
 make clean-checkpoints
 ```
+
+## Troubleshooting
+
+Run the following commands from the repository root, using the same
+`COMPOSE_FILE` setting as your deployment. If you opened a new shell, restore
+the inventory override and its host-path variable from step 3 first.
+
+### The hub is not ready
+
+```bash
+docker compose ps -a
+docker compose logs --tail=100
+curl --fail --max-time 10 http://127.0.0.1:8050/health
+```
+
+The hub waits for all five domains to become healthy before starting.
+RetroChimera can take several minutes to load its model. While a service shows
+`starting`, check its logs for progress rather than repeatedly restarting it.
+If it becomes `unhealthy` or exits, inspect that domain's logs for the cause.
+Review logs for sensitive inputs or local paths before sharing them.
+
+### Missing model assets or inventory
+
+The full network requires compatible Graphormer reduction and oxidation
+checkpoints; this repository does not provide a public download for them.
+If staging reports missing checkpoints, set
+`GRAPHORMER_REDUCTION_CHECKPOINT_SOURCE` and
+`GRAPHORMER_OXIDATION_CHECKPOINT_SOURCE` to readable, nonempty local files as
+shown in step 3, then run:
+
+```bash
+make graphormer-checkpoints
+make up
+```
+
+RetroChimera also needs a separate inventory. If it reports a missing or
+unreadable inventory, check the host file and restore the step 3 override.
+Use the resolved configuration to verify the mount:
+
+```bash
+docker compose config
+```
+
+Confirm that `retrochimera-server` mounts the inventory read-only at
+`/data/retrochimera-inventory.smi` and sets `RETROCHIMERA_INVENTORY_PATH` to
+that same container path. After correcting the configuration, apply it:
+
+```bash
+docker compose up -d retrochimera-server orfb-hub
+```
+
+### The agent is on another machine
+
+First run the hub health check on the Docker host. If it fails there, resolve
+service startup before changing the client. If health succeeds, configure the
+MCP client with `/mcp`, not `/health`, and ensure it supports Streamable HTTP.
+
+`127.0.0.1` refers to the machine where the MCP client runs, not a remote VM.
+Keep the default loopback binding and run an SSH tunnel on the client machine:
+
+```bash
+ssh -N -o ExitOnForwardFailure=yes -L 127.0.0.1:8050:127.0.0.1:8050 user@docker-host
+```
+
+Replace `user@docker-host` with your SSH destination and keep the tunnel open.
+On the client machine, verify
+`curl --fail --max-time 10 http://127.0.0.1:8050/health`, then connect the MCP
+client to `http://127.0.0.1:8050/mcp`. If local port 8050 is occupied, use
+`127.0.0.1:18050:127.0.0.1:8050` in the tunnel and port 18050 in the client URLs.
+
+The default endpoints have no authentication and allow code execution inside
+the containers; do not expose them directly to an untrusted network.
