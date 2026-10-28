@@ -35,9 +35,9 @@ export GRAPHORMER_REDUCTION_CHECKPOINT_SOURCE=/absolute/path/to/reduction_checkp
 export GRAPHORMER_OXIDATION_CHECKPOINT_SOURCE=/absolute/path/to/oxidation_checkpoint_best.pt
 ```
 
-RetroChimera uses the bundled `retrochimera_inventory.csv` by default. To use a
-different UTF-8, one-SMILES-per-line inventory, mount it into the container and
-set `RETROCHIMERA_INVENTORY_PATH` to its container path.
+RetroChimera evaluates purchasability against `retrochimera_inventory.csv` by
+default. To use a different UTF-8, one-SMILES-per-line inventory, mount it into
+the container and set `RETROCHIMERA_INVENTORY_PATH` to its container path.
 
 ## 4. Build and start
 
@@ -170,7 +170,7 @@ RetroChimera can take several minutes to load its model. While a service shows
 If it becomes `unhealthy` or exits, inspect that domain's logs for the cause.
 Review logs for sensitive inputs or local paths before sharing them.
 
-### Missing model assets or inventory
+### Missing model assets
 
 The full network requires compatible Graphormer reduction and oxidation
 checkpoints; this repository does not provide a public download for them.
@@ -184,15 +184,15 @@ make graphormer-checkpoints
 make up
 ```
 
-RetroChimera's default inventory is bundled in its Python package. If it reports
-a missing or unreadable inventory, rebuild the image from the current
-repository and check whether an override is set:
+### RetroChimera reports an unreadable inventory
+
+Check whether an inventory override is set:
 
 ```bash
 docker compose config
 ```
 
-Unset `RETROCHIMERA_INVENTORY_PATH` to return to the bundled inventory. If you
+Unset `RETROCHIMERA_INVENTORY_PATH` to use the default inventory. If you
 intentionally replace it, confirm that the configured container path is backed
 by a readable, read-only mount. After correcting the configuration, rebuild and
 apply it:

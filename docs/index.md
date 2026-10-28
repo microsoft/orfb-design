@@ -64,7 +64,7 @@ tests/                             lightweight regression tests
 
 Large model assets are deliberately not stored in the repository. See the
 [deployment tutorial](tutorials/deploy-and-use.md) for the required Graphormer
-checkpoints. The RetroChimera purchasability inventory is included.
+checkpoints.
 
 ---
 

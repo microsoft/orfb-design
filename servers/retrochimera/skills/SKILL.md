@@ -29,9 +29,9 @@ checkpoints:
 RETROCHIMERA_CHECKPOINT_DIR=/path/to/checkpoints    # RetroChimera model dir
 ```
 
-The checkpoints and default inventory are baked into the server's Docker image.
-To use a different one-SMILES-per-line inventory, set
-`RETROCHIMERA_INVENTORY_PATH` to that file.
+The server image contains the checkpoints and default inventory. To use a
+different one-SMILES-per-line inventory, set `RETROCHIMERA_INVENTORY_PATH` to
+that file.
 
 ## Running planning
 
