@@ -168,6 +168,10 @@ To run one domain without the hub, use the Compose file under
 `servers/<domain>/docker-compose.yml`. Graphormer and RetroChimera still require
 their respective external assets.
 
+For missing assets, unhealthy containers, slow startup, or remote-client
+connection issues, see the
+[troubleshooting guide](docs/tutorials/deploy-and-use.md#troubleshooting).
+
 ## Using the tools
 
 The hub exposes one persistent Python execution tool per domain:
