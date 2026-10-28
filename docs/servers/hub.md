@@ -7,8 +7,8 @@ the five scientific domain servers. It is built on the Agora Workbench
 You host the hub and domain servers yourself. In the default Docker Compose
 deployment, all six run as separate containers on your machine or VM.
 Scientific models and simulations run on that host, not through hosted
-model-provider APIs. Setup downloads software and some model assets; other
-assets must be supplied separately.
+model-provider APIs. Setup downloads software and public model assets; the two
+Graphormer redox checkpoints must be supplied locally.
 
 ## Architecture
 

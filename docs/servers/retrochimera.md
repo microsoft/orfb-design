@@ -53,7 +53,7 @@ The Pistachio-trained model is downloaded from the public
 [Figshare release](https://doi.org/10.6084/m9.figshare.30591107.v1). The model
 artifact is not the Pistachio reaction dataset.
 
-A separate UTF-8 inventory containing one purchasable SMILES per line is
-required through `RETROCHIMERA_INVENTORY_PATH`. The inventory controls only the
-purchasability annotations and route termination; use data that you are
-permitted to use.
+By default, purchasability is evaluated against
+`retrochimera_inventory.csv`, a UTF-8 Sigma/ZINC12 catalogue containing one
+SMILES per line. The inventory controls only purchasability annotations and
+route termination. Set `RETROCHIMERA_INVENTORY_PATH` to use another inventory.

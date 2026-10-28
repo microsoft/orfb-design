@@ -107,8 +107,7 @@ services:
       FASTMCP_HTTP_ALLOWED_HOSTS: *allowed-hosts
       # Pistachio checkpoint is baked into the image at /app/checkpoints. CPU only.
       RETROCHIMERA_CHECKPOINT_DIR: "${RETROCHIMERA_CHECKPOINT_DIR:-/app/checkpoints}"
-      # Required container path to a separately mounted, user-supplied
-      # one-SMILES-per-line purchasability inventory.
+      # Optional override for the bundled one-SMILES-per-line inventory.
       RETROCHIMERA_INVENTORY_PATH: "${RETROCHIMERA_INVENTORY_PATH:-}"
       # Rule-application worker pool size. Each worker holds a shard of the
       # ~146k-rule base, so more workers = smaller shards + more parallel rule

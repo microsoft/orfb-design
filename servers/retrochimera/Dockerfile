@@ -21,8 +21,7 @@ FROM ${BASE_IMAGE}
 # passthrough); torch submodels just run sequentially without a CUDA device.
 ENV RETROCHIMERA_CHECKPOINT_DIR=/app/checkpoints
 
-# Copy the server package tree and shared peer topology. Purchasability
-# inventories are user-supplied at runtime and are not baked into the image.
+# Copy the server package tree and shared peer topology.
 COPY --chown=appuser:appuser servers/retrochimera /app/servers/retrochimera
 COPY --chown=appuser:appuser servers/provenance_tools /app/servers/provenance_tools
 COPY --chown=appuser:appuser servers/peers.py /app/servers/peers.py

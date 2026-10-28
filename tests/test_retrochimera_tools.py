@@ -9,17 +9,28 @@ environment. These tests therefore exercise the input validation, which raises
 before any model is touched.
 """
 
+import hashlib
+
 import pytest
 from retrochimera_tools.retrosynthesis import predict_retrosynthesis
 
 
-def test_inventory_path_requires_user_configuration(monkeypatch):
+def test_inventory_path_uses_bundled_inventory_by_default(monkeypatch):
     from retrochimera_tools import _model
 
     monkeypatch.delenv("RETROCHIMERA_INVENTORY_PATH", raising=False)
 
-    with pytest.raises(RuntimeError, match="RETROCHIMERA_INVENTORY_PATH"):
-        _model._inventory_path()
+    assert _model._inventory_path() == _model.DEFAULT_INVENTORY_PATH
+    assert _model._inventory_path().is_file()
+
+
+def test_bundled_inventory_integrity():
+    from retrochimera_tools import _model
+
+    contents = _model.DEFAULT_INVENTORY_PATH.read_bytes()
+
+    assert contents.count(b"\n") == 81_712
+    assert hashlib.sha256(contents).hexdigest() == "3a828bbd940756cd0090a861ae9227f470e5eac4e762c26bcd3fdeeb94dac56d"
 
 
 def test_inventory_path_rejects_missing_file(monkeypatch, tmp_path):

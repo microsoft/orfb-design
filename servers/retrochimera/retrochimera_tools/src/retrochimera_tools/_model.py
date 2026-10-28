@@ -5,7 +5,7 @@
 
 Faithful port of the original standalone FastAPI ``retrochimera`` service's
 multi-step planning logic (RetroStar search over a RetroChimera single-step
-model, with a user-supplied purchasable-compound inventory and a single-step fallback),
+model, with a bundled purchasable-compound inventory and a single-step fallback),
 adapted to run **inside the Agora Workbench kernel** and to return plain
 dictionaries instead of pydantic models.
 
@@ -16,9 +16,10 @@ the checkpoints.
 
 Enable real planning by:
   * installing syntheseus + rdkit + the retrochimera package into the kernel,
-  * setting ``RETROCHIMERA_CHECKPOINT_DIR`` to the model checkpoints, and
-  * setting ``RETROCHIMERA_INVENTORY_PATH`` to a user-supplied text file with
-    one purchasable SMILES per line.
+  * setting ``RETROCHIMERA_CHECKPOINT_DIR`` to the model checkpoints.
+
+The bundled inventory is used by default. Set ``RETROCHIMERA_INVENTORY_PATH``
+to override it with another one-SMILES-per-line file.
 """
 
 from __future__ import annotations
@@ -37,6 +38,7 @@ MAX_NUM_RESULTS = 50
 DEFAULT_NUM_RESULTS = 5
 MAX_DEPTH = 10
 ROUTE_EXTRACTION_TIMEOUT_S = 30.0
+DEFAULT_INVENTORY_PATH = Path(__file__).resolve().parent / "data" / "retrochimera_inventory.csv"
 
 # Rule-application worker pool sizing. RetroChimera's ``RuleApplicationServer``
 # defaults to ``cpu_count()`` workers (the original standalone endpoint relied on
@@ -70,13 +72,7 @@ def _num_processes_override() -> Optional[int]:
 
 def _inventory_path() -> Path:
     raw_path = os.getenv("RETROCHIMERA_INVENTORY_PATH", "").strip()
-    if not raw_path:
-        raise RuntimeError(
-            "RETROCHIMERA_INVENTORY_PATH must point to a user-supplied "
-            "purchasability inventory with one SMILES per line"
-        )
-
-    path = Path(raw_path).expanduser()
+    path = Path(raw_path).expanduser() if raw_path else DEFAULT_INVENTORY_PATH
     if not path.is_file():
         raise FileNotFoundError(f"RetroChimera inventory file does not exist: {path}")
     return path

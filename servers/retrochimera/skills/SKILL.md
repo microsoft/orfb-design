@@ -1,6 +1,6 @@
 ---
 name: retrochimera-retrosynthesis
-description: Plan retrosynthetic routes for organic redox-flow-battery candidate molecules using the RetroChimera model with RetroStar multi-step search and a user-supplied purchasable-compound inventory, via the predict_retrosynthesis tool and the execute_retrochimera_code tool.
+description: Plan retrosynthetic routes for organic redox-flow-battery candidate molecules using the RetroChimera model with RetroStar multi-step search and a bundled purchasable-compound inventory, via the predict_retrosynthesis tool and the execute_retrochimera_code tool.
 states:
   - retrochimera.routes_predicted
 ---
@@ -27,11 +27,11 @@ checkpoints:
 
 ```
 RETROCHIMERA_CHECKPOINT_DIR=/path/to/checkpoints    # RetroChimera model dir
-RETROCHIMERA_INVENTORY_PATH=/path/to/inventory.smi  # required; one SMILES per line
 ```
 
-The checkpoints are baked into the server's Docker image. Inventory data is not
-bundled; mount a user-supplied file and set the path before starting the server.
+The server image contains the checkpoints and default inventory. To use a
+different one-SMILES-per-line inventory, set `RETROCHIMERA_INVENTORY_PATH` to
+that file.
 
 ## Running planning
 

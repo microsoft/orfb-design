@@ -53,7 +53,7 @@ RETROCHIMERA_SKILLS = [
         description=(
             "Plan retrosynthetic routes for organic redox-flow-battery candidate "
             "molecules using the RetroChimera model with RetroStar multi-step "
-            "search and a user-supplied purchasable-compound inventory, via the "
+            "search and a bundled purchasable-compound inventory, via the "
             "predict_retrosynthesis tool and the execute_retrochimera_code tool."
         ),
         domain="retrochimera",

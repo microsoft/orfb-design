@@ -22,8 +22,8 @@ Learn more in the [Agora Workbench documentation](https://microsoft.github.io/ag
 You host the network yourself: the default Docker Compose deployment runs the
 hub and five domain servers as separate containers on your machine or VM.
 Scientific models and simulations run on that host, not through hosted
-model-provider APIs. Setup downloads software and some model assets; other
-assets must be supplied separately.
+model-provider APIs. Setup downloads software and public model assets; the two
+Graphormer redox checkpoints must be supplied locally.
 
 ```text
 MCP-compatible AI agent (chooses tools and orchestrates the workflow)
@@ -100,22 +100,19 @@ you add real authentication and appropriate network controls.
 - Sufficient disk and memory for several model images and checkpoints;
   RetroChimera is the most resource-intensive service
 - Two Graphormer redox checkpoint files supplied separately
-- A RetroChimera purchasability inventory supplied separately
 
 The first image build downloads scientific Python environments and can take a
 substantial amount of time.
 
-## External model assets
+## Model assets
 
-Large models and third-party inventory data are not committed to this
-repository.
+Large model checkpoints are not committed to this repository.
 
 | Asset | How it is supplied |
 |---|---|
 | Graphormer reduction checkpoint | Local file set with `GRAPHORMER_REDUCTION_CHECKPOINT_SOURCE` |
 | Graphormer oxidation checkpoint | Local file set with `GRAPHORMER_OXIDATION_CHECKPOINT_SOURCE` |
 | RetroChimera Pistachio-trained model | Downloaded from the [`microsoft/retrochimera`](https://github.com/microsoft/retrochimera) [Figshare release](https://doi.org/10.6084/m9.figshare.30591107.v1) by `scripts/fetch_checkpoints.sh` |
-| RetroChimera purchasability inventory | User-provided UTF-8 file containing one SMILES per line |
 | SolTranNet weights | Included by the upstream Python package |
 | EZBattery model | Source is fetched from a pinned [`pnnl/EZBattery`](https://github.com/pnnl/EZBattery) commit during the image build; reference-cell data are included locally |
 
@@ -124,11 +121,6 @@ time. Staged copies are stored under `model-assets/`, which is git-ignored.
 This repository does not currently provide a public download for compatible
 Graphormer redox checkpoints; without them, run the asset-free services
 individually rather than the complete network.
-
-The inventory controls which leaf molecules RetroChimera labels as
-purchasable. Blank lines and lines beginning with `#` are ignored. Use an
-inventory that you are permitted to use and redistribute; the repository does
-not provide commercial-catalog data.
 
 ## Quick start
 
@@ -146,27 +138,7 @@ not provide commercial-catalog data.
    export GRAPHORMER_OXIDATION_CHECKPOINT_SOURCE=/absolute/path/to/oxidation/checkpoint_best.pt
    ```
 
-3. Create a local Compose override for the RetroChimera inventory:
-
-   ```bash
-   export RETROCHIMERA_INVENTORY_HOST_PATH=/absolute/path/to/inventory.smi
-
-   cat > docker-compose.inventory.yml <<'YAML'
-   services:
-     retrochimera-server:
-       volumes:
-         - type: bind
-           source: ${RETROCHIMERA_INVENTORY_HOST_PATH}
-           target: /data/retrochimera-inventory.smi
-           read_only: true
-       environment:
-         RETROCHIMERA_INVENTORY_PATH: /data/retrochimera-inventory.smi
-   YAML
-
-   export COMPOSE_FILE=docker-compose.yml:docker-compose.inventory.yml
-   ```
-
-4. Build and start the network:
+3. Build and start the network:
 
    ```bash
    make up
@@ -176,7 +148,7 @@ not provide commercial-catalog data.
    image, builds the six service images, and starts the network in the
    background.
 
-5. Check service status:
+4. Check service status:
 
    ```bash
    make ps
@@ -202,8 +174,8 @@ make clean-checkpoints       # remove staged model assets and download cache
 ```
 
 To run one domain without the hub, use the Compose file under
-`servers/<domain>/docker-compose.yml`. Graphormer and RetroChimera still require
-their respective external assets.
+`servers/<domain>/docker-compose.yml`. Graphormer requires the two local redox
+checkpoints; RetroChimera requires its staged Pistachio model.
 
 For missing assets, unhealthy containers, slow startup, or remote-client
 connection issues, see the
@@ -254,7 +226,8 @@ intermediate objects in persistent kernels and print concise summaries.
 
 ### RetroChimera
 
-- Requires the public model checkpoint and a user-provided inventory.
+- Evaluates purchasability against the included Sigma/ZINC12 catalogue; set
+  `RETROCHIMERA_INVENTORY_PATH` to use another one-SMILES-per-line inventory.
 - Planning is CPU-intensive and may take tens of minutes for one target,
   depending on the molecule and host.
 - Calls that run longer than about 45 seconds are promoted to background jobs.
@@ -280,7 +253,7 @@ intermediate objects in persistent kernels and print concise summaries.
 | `GRAPHORMER_OXIDATION_CHECKPOINT_SOURCE` | Local source file used to stage the oxidation checkpoint |
 | `GRAPHORMER_CHECKPOINT_DIR` | Checkpoint directory inside the Graphormer container; defaults to `/app/checkpoints` |
 | `GRAPHORMER_DEVICE` | Torch device; defaults to `cpu` |
-| `RETROCHIMERA_INVENTORY_PATH` | Inventory path inside the RetroChimera container |
+| `RETROCHIMERA_INVENTORY_PATH` | Optional replacement inventory path inside the RetroChimera container |
 | `RETROCHIMERA_NUM_PROCESSES` | Rule-application worker count; unset uses available CPUs |
 | `RETROCHIMERA_RECYCLE_AFTER_JOBS` | Recreate the worker pool after this many predictions; `0` disables |
 | `RETROCHIMERA_RECYCLE_RSS_MB` | Recreate workers above this RSS threshold; `0` disables |
