@@ -30,6 +30,27 @@ def _fixture_env(tmp_path: Path, archive: Path, checksum: str) -> dict[str, str]
     }
 
 
+def _graphormer_fixture_env(
+    tmp_path: Path, reduction: Path, oxidation: Path
+) -> dict[str, str]:
+    env = {
+        **os.environ,
+        "ORFB_MODEL_ASSETS_DIR": str(tmp_path / "assets"),
+        "ORFB_CHECKPOINT_CACHE_DIR": str(tmp_path / "cache"),
+        "GRAPHORMER_REDUCTION_CHECKPOINT_URL": reduction.as_uri(),
+        "GRAPHORMER_OXIDATION_CHECKPOINT_URL": oxidation.as_uri(),
+        "GRAPHORMER_REDUCTION_CHECKPOINT_SHA256": hashlib.sha256(
+            reduction.read_bytes()
+        ).hexdigest(),
+        "GRAPHORMER_OXIDATION_CHECKPOINT_SHA256": hashlib.sha256(
+            oxidation.read_bytes()
+        ).hexdigest(),
+    }
+    env.pop("GRAPHORMER_REDUCTION_CHECKPOINT_SOURCE", None)
+    env.pop("GRAPHORMER_OXIDATION_CHECKPOINT_SOURCE", None)
+    return env
+
+
 def test_fetch_graphormer_checkpoints_from_local_paths(tmp_path):
     reduction = tmp_path / "reduction.pt"
     oxidation = tmp_path / "oxidation.pt"
@@ -53,7 +74,7 @@ def test_fetch_graphormer_checkpoints_from_local_paths(tmp_path):
     )
     model_dir = tmp_path / "assets" / "graphormer"
 
-    assert "caller-supplied local files" in first.stdout
+    assert "pinned Hugging Face release" in first.stdout
     assert (model_dir / "reduction_checkpoint_best.pt").read_bytes() == reduction.read_bytes()
     assert (model_dir / "oxidation_checkpoint_best.pt").read_bytes() == oxidation.read_bytes()
 
@@ -80,14 +101,48 @@ def test_fetch_graphormer_checkpoints_from_local_paths(tmp_path):
     assert (model_dir / "oxidation_checkpoint_best.pt").read_bytes() == oxidation.read_bytes()
 
 
-def test_fetch_graphormer_checkpoints_require_sources(tmp_path):
-    env = {
-        **os.environ,
-        "ORFB_MODEL_ASSETS_DIR": str(tmp_path / "assets"),
-        "ORFB_CHECKPOINT_CACHE_DIR": str(tmp_path / "cache"),
-    }
-    env.pop("GRAPHORMER_REDUCTION_CHECKPOINT_SOURCE", None)
-    env.pop("GRAPHORMER_OXIDATION_CHECKPOINT_SOURCE", None)
+def test_fetch_graphormer_checkpoints_from_hugging_face(tmp_path):
+    reduction = tmp_path / "graphormer_reduction.pt"
+    oxidation = tmp_path / "graphormer_oxidation.pt"
+    reduction.write_bytes(b"hosted reduction checkpoint")
+    oxidation.write_bytes(b"hosted oxidation checkpoint")
+    env = _graphormer_fixture_env(tmp_path, reduction, oxidation)
+
+    first = subprocess.run(
+        [FETCH_SCRIPT, "graphormer"],
+        cwd=REPO_ROOT,
+        env=env,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    model_dir = tmp_path / "assets" / "graphormer"
+    cache_dir = tmp_path / "cache"
+
+    assert "pinned Hugging Face release" in first.stdout
+    assert (model_dir / "reduction_checkpoint_best.pt").read_bytes() == reduction.read_bytes()
+    assert (model_dir / "oxidation_checkpoint_best.pt").read_bytes() == oxidation.read_bytes()
+    assert (cache_dir / reduction.name).read_bytes() == reduction.read_bytes()
+    assert (cache_dir / oxidation.name).read_bytes() == oxidation.read_bytes()
+
+    second = subprocess.run(
+        [FETCH_SCRIPT, "graphormer"],
+        cwd=REPO_ROOT,
+        env=env,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    assert second.stdout.count("already staged, checksum verified") == 2
+
+
+def test_fetch_graphormer_checkpoints_reject_bad_checksum(tmp_path):
+    reduction = tmp_path / "graphormer_reduction.pt"
+    oxidation = tmp_path / "graphormer_oxidation.pt"
+    reduction.write_bytes(b"hosted reduction checkpoint")
+    oxidation.write_bytes(b"hosted oxidation checkpoint")
+    env = _graphormer_fixture_env(tmp_path, reduction, oxidation)
+    env["GRAPHORMER_REDUCTION_CHECKPOINT_SHA256"] = "0" * 64
 
     result = subprocess.run(
         [FETCH_SCRIPT, "graphormer"],
@@ -99,7 +154,8 @@ def test_fetch_graphormer_checkpoints_require_sources(tmp_path):
     )
 
     assert result.returncode != 0
-    assert "GRAPHORMER_REDUCTION_CHECKPOINT_SOURCE" in result.stderr
+    assert "checksum mismatch" in result.stderr
+    assert not (tmp_path / "assets" / "graphormer" / "reduction_checkpoint_best.pt").exists()
 
 
 def test_fetch_retrochimera_checkpoint(tmp_path):
