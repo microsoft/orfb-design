@@ -4,17 +4,15 @@
 # ORFB Design network — standardized build & launch.
 #
 # The graphormer / retrochimera server images bake in model checkpoints staged
-# under model-assets/ (git-ignored). Graphormer checkpoints are copied from
-# caller-supplied local paths; RetroChimera comes from public Figshare.
+# under model-assets/ (git-ignored). Graphormer checkpoints come from a pinned
+# Hugging Face revision; RetroChimera comes from public Figshare.
 #
 # Quick start:
-#   export GRAPHORMER_REDUCTION_CHECKPOINT_SOURCE=/path/to/reduction.pt
-#   export GRAPHORMER_OXIDATION_CHECKPOINT_SOURCE=/path/to/oxidation.pt
 #   make up           # fetch checkpoints -> build base image -> build & launch
 #
 # Individual steps:
 #   make checkpoints             # stage all checkpoints (idempotent)
-#   make graphormer-checkpoints  # copy caller-supplied local files
+#   make graphormer-checkpoints  # download the pinned Hugging Face artifacts
 #   make retrochimera-checkpoint # download the public Figshare artifact
 #   make ezbattery-source        # fetch the pinned upstream EZBattery source
 #   make base-image   # build the shared base image (mcp-server-base:local)
@@ -69,7 +67,7 @@ dependency-locks:
 	  --python-version 3.11 --python-platform x86_64-unknown-linux-gnu \
 	  --no-deps --generate-hashes --quiet --output-file servers/ezbattery/requirements.txt
 
-$(GRAPHORMER_REDUCTION_CKPT) $(GRAPHORMER_OXIDATION_CKPT):
+$(GRAPHORMER_REDUCTION_CKPT) $(GRAPHORMER_OXIDATION_CKPT) &:
 	scripts/fetch_checkpoints.sh graphormer
 
 $(RETRO_CKPT):

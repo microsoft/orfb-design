@@ -47,11 +47,14 @@ provide the molecular graph and model runtime.
 The server reconstructs Graphormer models from Fairseq state-dict checkpoints
 and runs inference on CPU.
 
-Two separately supplied files are required:
+Two checkpoint files are staged from a revision-pinned, checksum-verified
+[`microsoft/Graphormer`](https://huggingface.co/microsoft/Graphormer/tree/main/orfb-design/checkpoints)
+Hugging Face release:
 
 - `reduction_checkpoint_best.pt`
 - `oxidation_checkpoint_best.pt`
 
-Set `GRAPHORMER_REDUCTION_CHECKPOINT_SOURCE` and
-`GRAPHORMER_OXIDATION_CHECKPOINT_SOURCE` before staging assets. This repository
-does not currently provide a public download for compatible redox checkpoints.
+Run `make graphormer-checkpoints` to download and stage them. Set
+`GRAPHORMER_REDUCTION_CHECKPOINT_SOURCE` or
+`GRAPHORMER_OXIDATION_CHECKPOINT_SOURCE` only when overriding a hosted
+checkpoint with a local file.

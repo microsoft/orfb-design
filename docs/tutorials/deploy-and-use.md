@@ -11,11 +11,8 @@ Install:
 - GNU Make;
 - a Linux x86_64 host, or a Docker environment capable of running the
   repository's Linux x86_64 scientific Python images;
-- `curl`, `unzip`, and `md5sum`; and
+- `curl`, `unzip`, `sha256sum`, and `md5sum`; and
 - enough disk and memory for the scientific images and model assets.
-
-The complete network additionally requires compatible Graphormer reduction and
-oxidation checkpoints.
 
 The RetroChimera image and runtime are the most resource intensive.
 
@@ -28,12 +25,16 @@ cd orfb-design
 
 ## 3. Configure model assets
 
-Point the staging script at the two local Graphormer checkpoints:
+The staging script downloads the Graphormer checkpoints from a pinned,
+checksum-verified Hugging Face revision. To override either artifact with a
+local checkpoint, set the corresponding variable:
 
 ```bash
 export GRAPHORMER_REDUCTION_CHECKPOINT_SOURCE=/absolute/path/to/reduction_checkpoint_best.pt
 export GRAPHORMER_OXIDATION_CHECKPOINT_SOURCE=/absolute/path/to/oxidation_checkpoint_best.pt
 ```
+
+Otherwise, leave both variables unset.
 
 RetroChimera evaluates purchasability against `retrochimera_inventory.csv` by
 default. To use a different UTF-8, one-SMILES-per-line inventory, mount it into
@@ -172,9 +173,8 @@ Review logs for sensitive inputs or local paths before sharing them.
 
 ### Missing model assets
 
-The full network requires compatible Graphormer reduction and oxidation
-checkpoints; this repository does not provide a public download for them.
-If staging reports missing checkpoints, set
+Run `make graphormer-checkpoints` again to retry the pinned Hugging Face
+downloads. If the hosted artifacts are unavailable, set
 `GRAPHORMER_REDUCTION_CHECKPOINT_SOURCE` and
 `GRAPHORMER_OXIDATION_CHECKPOINT_SOURCE` to readable, nonempty local files as
 shown in step 3, then run:

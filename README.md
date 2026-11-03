@@ -96,10 +96,9 @@ you add real authentication and appropriate network controls.
 - GNU Make
 - A Linux x86_64 host, or a Docker environment capable of running the
   repository's Linux x86_64 scientific Python images
-- `curl`, `unzip`, and `md5sum` for checkpoint staging
+- `curl`, `unzip`, `sha256sum`, and `md5sum` for checkpoint staging
 - Sufficient disk and memory for several model images and checkpoints;
   RetroChimera is the most resource-intensive service
-- Two Graphormer redox checkpoint files supplied separately
 
 The first image build downloads scientific Python environments and can take a
 substantial amount of time.
@@ -110,17 +109,16 @@ Large model checkpoints are not committed to this repository.
 
 | Asset | How it is supplied |
 |---|---|
-| Graphormer reduction checkpoint | Local file set with `GRAPHORMER_REDUCTION_CHECKPOINT_SOURCE` |
-| Graphormer oxidation checkpoint | Local file set with `GRAPHORMER_OXIDATION_CHECKPOINT_SOURCE` |
+| Graphormer reduction checkpoint | Downloaded from the pinned [`microsoft/Graphormer`](https://huggingface.co/microsoft/Graphormer/tree/main/orfb-design/checkpoints) Hugging Face revision |
+| Graphormer oxidation checkpoint | Downloaded from the pinned [`microsoft/Graphormer`](https://huggingface.co/microsoft/Graphormer/tree/main/orfb-design/checkpoints) Hugging Face revision |
 | RetroChimera Pistachio-trained model | Downloaded from the [`microsoft/retrochimera`](https://github.com/microsoft/retrochimera) [Figshare release](https://doi.org/10.6084/m9.figshare.30591107.v1) by `scripts/fetch_checkpoints.sh` |
 | SolTranNet weights | Included by the upstream Python package |
 | EZBattery model | Source is fetched from a pinned [`pnnl/EZBattery`](https://github.com/pnnl/EZBattery) commit during the image build; reference-cell data are included locally |
 
-The Graphormer checkpoint paths are needed when staging the files for the first
-time. Staged copies are stored under `model-assets/`, which is git-ignored.
-This repository does not currently provide a public download for compatible
-Graphormer redox checkpoints; without them, run the asset-free services
-individually rather than the complete network.
+Downloads are cached under `.cache/checkpoints/`, verified against pinned
+checksums, and staged under the git-ignored `model-assets/` directory. Local
+Graphormer files can optionally replace either hosted artifact by setting the
+corresponding `GRAPHORMER_*_CHECKPOINT_SOURCE` variable.
 
 ## Quick start
 
@@ -131,14 +129,7 @@ individually rather than the complete network.
    cd orfb-design
    ```
 
-2. Set the paths to the two Graphormer checkpoints:
-
-   ```bash
-   export GRAPHORMER_REDUCTION_CHECKPOINT_SOURCE=/absolute/path/to/reduction/checkpoint_best.pt
-   export GRAPHORMER_OXIDATION_CHECKPOINT_SOURCE=/absolute/path/to/oxidation/checkpoint_best.pt
-   ```
-
-3. Build and start the network:
+2. Build and start the network:
 
    ```bash
    make up
@@ -148,7 +139,7 @@ individually rather than the complete network.
    image, builds the six service images, and starts the network in the
    background.
 
-4. Check service status:
+3. Check service status:
 
    ```bash
    make ps
@@ -162,7 +153,7 @@ it loads a large planning model and reaction-rule inventory at startup.
 
 ```bash
 make checkpoints             # stage all external model assets
-make graphormer-checkpoints  # stage only the two local Graphormer files
+make graphormer-checkpoints  # download and stage the Graphormer checkpoints
 make retrochimera-checkpoint # download and unpack the public RetroChimera model
 make base-image              # build mcp-server-base:local
 make build                   # build every service image
@@ -174,8 +165,8 @@ make clean-checkpoints       # remove staged model assets and download cache
 ```
 
 To run one domain without the hub, use the Compose file under
-`servers/<domain>/docker-compose.yml`. Graphormer requires the two local redox
-checkpoints; RetroChimera requires its staged Pistachio model.
+`servers/<domain>/docker-compose.yml`. Graphormer and RetroChimera require their
+staged model assets.
 
 For missing assets, unhealthy containers, slow startup, or remote-client
 connection issues, see the
@@ -249,8 +240,8 @@ intermediate objects in persistent kernels and print concise summaries.
 
 | Variable | Purpose |
 |---|---|
-| `GRAPHORMER_REDUCTION_CHECKPOINT_SOURCE` | Local source file used to stage the reduction checkpoint |
-| `GRAPHORMER_OXIDATION_CHECKPOINT_SOURCE` | Local source file used to stage the oxidation checkpoint |
+| `GRAPHORMER_REDUCTION_CHECKPOINT_SOURCE` | Optional local reduction checkpoint override |
+| `GRAPHORMER_OXIDATION_CHECKPOINT_SOURCE` | Optional local oxidation checkpoint override |
 | `GRAPHORMER_CHECKPOINT_DIR` | Checkpoint directory inside the Graphormer container; defaults to `/app/checkpoints` |
 | `GRAPHORMER_DEVICE` | Torch device; defaults to `cpu` |
 | `RETROCHIMERA_INVENTORY_PATH` | Optional replacement inventory path inside the RetroChimera container |
