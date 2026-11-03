@@ -67,7 +67,7 @@ dependency-locks:
 	  --python-version 3.11 --python-platform x86_64-unknown-linux-gnu \
 	  --no-deps --generate-hashes --quiet --output-file servers/ezbattery/requirements.txt
 
-$(GRAPHORMER_REDUCTION_CKPT) $(GRAPHORMER_OXIDATION_CKPT):
+$(GRAPHORMER_REDUCTION_CKPT) $(GRAPHORMER_OXIDATION_CKPT) &:
 	scripts/fetch_checkpoints.sh graphormer
 
 $(RETRO_CKPT):

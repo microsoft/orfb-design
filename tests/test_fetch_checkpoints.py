@@ -30,21 +30,15 @@ def _fixture_env(tmp_path: Path, archive: Path, checksum: str) -> dict[str, str]
     }
 
 
-def _graphormer_fixture_env(
-    tmp_path: Path, reduction: Path, oxidation: Path
-) -> dict[str, str]:
+def _graphormer_fixture_env(tmp_path: Path, reduction: Path, oxidation: Path) -> dict[str, str]:
     env = {
         **os.environ,
         "ORFB_MODEL_ASSETS_DIR": str(tmp_path / "assets"),
         "ORFB_CHECKPOINT_CACHE_DIR": str(tmp_path / "cache"),
         "GRAPHORMER_REDUCTION_CHECKPOINT_URL": reduction.as_uri(),
         "GRAPHORMER_OXIDATION_CHECKPOINT_URL": oxidation.as_uri(),
-        "GRAPHORMER_REDUCTION_CHECKPOINT_SHA256": hashlib.sha256(
-            reduction.read_bytes()
-        ).hexdigest(),
-        "GRAPHORMER_OXIDATION_CHECKPOINT_SHA256": hashlib.sha256(
-            oxidation.read_bytes()
-        ).hexdigest(),
+        "GRAPHORMER_REDUCTION_CHECKPOINT_SHA256": hashlib.sha256(reduction.read_bytes()).hexdigest(),
+        "GRAPHORMER_OXIDATION_CHECKPOINT_SHA256": hashlib.sha256(oxidation.read_bytes()).hexdigest(),
     }
     env.pop("GRAPHORMER_REDUCTION_CHECKPOINT_SOURCE", None)
     env.pop("GRAPHORMER_OXIDATION_CHECKPOINT_SOURCE", None)
@@ -156,6 +150,29 @@ def test_fetch_graphormer_checkpoints_reject_bad_checksum(tmp_path):
     assert result.returncode != 0
     assert "checksum mismatch" in result.stderr
     assert not (tmp_path / "assets" / "graphormer" / "reduction_checkpoint_best.pt").exists()
+
+
+def test_make_groups_graphormer_checkpoint_targets(tmp_path):
+    reduction = tmp_path / "reduction_checkpoint_best.pt"
+    oxidation = tmp_path / "oxidation_checkpoint_best.pt"
+
+    result = subprocess.run(
+        [
+            "make",
+            "--dry-run",
+            "--jobs=2",
+            f"GRAPHORMER_REDUCTION_CKPT={reduction}",
+            f"GRAPHORMER_OXIDATION_CKPT={oxidation}",
+            str(reduction),
+            str(oxidation),
+        ],
+        cwd=REPO_ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+
+    assert result.stdout.count("scripts/fetch_checkpoints.sh graphormer") == 1
 
 
 def test_fetch_retrochimera_checkpoint(tmp_path):
