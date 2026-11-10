@@ -47,11 +47,6 @@ provide the molecular graph and model runtime.
 The server reconstructs Graphormer models from Fairseq state-dict checkpoints
 and runs inference on CPU.
 
-Both ORFB checkpoints use the `graphormer_base` architecture: 12 encoder
-layers, a 768-dimensional embedding, 32 attention heads, and one scalar
-regression output. These details come from the published checkpoint manifest
-and match the model configuration loaded by this repository.
-
 Two checkpoint files are staged from a revision-pinned, checksum-verified
 [`microsoft/Graphormer`](https://huggingface.co/microsoft/Graphormer/tree/main/orfb-design/checkpoints)
 Hugging Face release:
