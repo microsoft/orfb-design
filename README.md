@@ -219,8 +219,8 @@ intermediate objects in persistent kernels and print concise summaries.
 
 - Evaluates purchasability against the included Sigma/ZINC15 catalogue; see the
   [RetroChimera documentation](docs/servers/retrochimera.md#model-and-inventory-assets)
-  for its provenance and licensing. Set `RETROCHIMERA_INVENTORY_PATH` to use
-  another one-SMILES-per-line inventory.
+  for its provenance. Set `RETROCHIMERA_INVENTORY_PATH` to use another
+  one-SMILES-per-line inventory.
 - Planning is CPU-intensive and may take tens of minutes for one target,
   depending on the molecule and host.
 - Calls that run longer than about 45 seconds are promoted to background jobs.
