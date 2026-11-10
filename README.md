@@ -22,8 +22,8 @@ Learn more in the [Agora Workbench documentation](https://microsoft.github.io/ag
 You host the network yourself: the default Docker Compose deployment runs the
 hub and five domain servers as separate containers on your machine or VM.
 Scientific models and simulations run on that host, not through hosted
-model-provider APIs. Setup downloads software and public model assets; the two
-Graphormer redox checkpoints must be supplied locally.
+model-provider APIs. Setup downloads the required software and public model
+assets, including the two Graphormer redox checkpoints.
 
 ```text
 MCP-compatible AI agent (chooses tools and orchestrates the workflow)
@@ -217,8 +217,10 @@ intermediate objects in persistent kernels and print concise summaries.
 
 ### RetroChimera
 
-- Evaluates purchasability against the included Sigma/ZINC12 catalogue; set
-  `RETROCHIMERA_INVENTORY_PATH` to use another one-SMILES-per-line inventory.
+- Evaluates purchasability against the included Sigma/ZINC15 catalogue; see the
+  [RetroChimera documentation](docs/servers/retrochimera.md#model-and-inventory-assets)
+  for its provenance. Set `RETROCHIMERA_INVENTORY_PATH` to use another
+  one-SMILES-per-line inventory.
 - Planning is CPU-intensive and may take tens of minutes for one target,
   depending on the molecule and host.
 - Calls that run longer than about 45 seconds are promoted to background jobs.

@@ -54,6 +54,11 @@ The Pistachio-trained model is downloaded from the public
 artifact is not the Pistachio reaction dataset.
 
 By default, purchasability is evaluated against
-`retrochimera_inventory.csv`, a UTF-8 Sigma/ZINC12 catalogue containing one
-SMILES per line. The inventory controls only purchasability annotations and
-route termination. Set `RETROCHIMERA_INVENTORY_PATH` to use another inventory.
+`retrochimera_inventory.csv`, a UTF-8 Sigma/ZINC15 catalogue containing one
+SMILES per line. It is a Microsoft-curated snapshot sourced from
+[ZINC15](https://zinc15.docking.org/) supplier records, including Sigma-Aldrich
+catalogue entries. ZINC15 is described by Sterling and Irwin,
+[*J. Chem. Inf. Model.* 2015](https://doi.org/10.1021/acs.jcim.5b00559).
+
+The inventory controls only purchasability annotations and route termination.
+Set `RETROCHIMERA_INVENTORY_PATH` to use another inventory.
